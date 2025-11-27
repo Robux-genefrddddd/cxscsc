@@ -371,14 +371,6 @@ export default function Admin() {
               >
                 <Home size={20} className="text-gray-400 hover:text-white" />
               </button>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                style={{
-                  background: "linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2))",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                <Shield size={24} className="text-blue-400" />
-              </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">Panneau Admin</h1>
                 <p className="text-xs text-gray-500">Gestion complète de la plateforme</p>
