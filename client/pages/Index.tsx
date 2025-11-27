@@ -117,15 +117,24 @@ export default function Index() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col md:flex-row">
-        {/* Mobile Header */}
-        <div className="md:hidden border-b border-border px-4 py-3">
+      <div className="flex-1 flex flex-col">
+        {/* Header with Menu Button */}
+        <div className="border-b border-white/10 px-4 md:px-6 py-4 backdrop-blur-sm flex items-center justify-between bg-gradient-to-r from-background to-background/95">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200 text-white/60 hover:text-white md:absolute md:left-6"
+            aria-label="Menu"
           >
-            <Menu size={20} className="text-foreground" />
+            <Menu size={20} />
           </button>
+
+          <div className="flex-1 text-center">
+            <h1 className="text-lg font-semibold text-white hidden md:block">
+              Grok Chat
+            </h1>
+          </div>
+
+          <div className="w-8" />
         </div>
 
         {/* Chat Area */}

@@ -1,9 +1,11 @@
-import { Send, Smile, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Send, Smile, Loader2, User } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MessagesService, Message } from "@/lib/messages";
 import { AIService } from "@/lib/ai";
 import { toast } from "sonner";
+import { MessageRenderer } from "@/components/MessageRenderer";
+import { ThinkingAnimation } from "@/components/ThinkingAnimation";
 import {
   Popover,
   PopoverContent,
@@ -21,7 +23,7 @@ const EMOJIS = [
   "😡",
   "🎉",
   "🔥",
-  "👍",
+  "����",
   "❤️",
   "✨",
   "🚀",
@@ -46,12 +48,18 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (conversationId && user?.uid) {
       loadMessages();
     }
   }, [conversationId, user?.uid]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages, loading, isThinking]);
 
   const loadMessages = async () => {
     if (!conversationId) return;
@@ -104,6 +112,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
     const userMessageText = message;
     setMessage("");
     setLoading(true);
+    setIsThinking(true);
 
     try {
       // Add user message to chat
@@ -128,6 +137,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
         content: msg.content,
       }));
 
+      setIsThinking(false);
       const aiResponse = await AIService.sendMessage(
         userMessageText,
         conversationHistory,
@@ -161,6 +171,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
       );
     } finally {
       setLoading(false);
+      setIsThinking(false);
     }
   };
 
@@ -170,9 +181,12 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   };
 
   return (
-    <div id="chat-area" className="flex-1 flex flex-col bg-background">
+    <div
+      id="chat-area"
+      className="flex-1 flex flex-col bg-gradient-to-b from-background via-background to-background/95"
+    >
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto flex flex-col p-6 animate-fadeIn">
+      <div className="flex-1 overflow-y-auto flex flex-col px-8 py-6 animate-fadeIn">
         {!conversationId ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -226,7 +240,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6 pb-4">
             {chatMessages.map((msg) => (
               <div
                 key={msg.id}
@@ -234,36 +248,56 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                   msg.role === "user" ? "justify-end" : "justify-start"
                 } animate-slideUp`}
               >
-                <div
-                  className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                    msg.role === "user"
-                      ? "bg-white/20 text-white rounded-br-none"
-                      : "bg-white/10 text-foreground/90 rounded-bl-none"
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed">{msg.content}</p>
-                </div>
+                {msg.role === "user" ? (
+                  <div className="flex gap-3 max-w-2xl items-start">
+                    <div className="flex-1 max-w-lg">
+                      <div className="rounded-2xl rounded-tr-none bg-gradient-to-br from-blue-600/40 to-blue-700/30 border border-blue-500/30 px-5 py-3 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow text-white/95 text-sm leading-relaxed break-words">
+                        <MessageRenderer
+                          content={msg.content}
+                          role={msg.role}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-3 max-w-2xl items-start">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                      <span className="text-xs font-bold text-white">G</span>
+                    </div>
+                    <div className="flex-1 max-w-lg">
+                      <div className="rounded-2xl rounded-tl-none bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-white/10 px-5 py-4 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow text-white/90 text-sm leading-relaxed break-words">
+                        <MessageRenderer
+                          content={msg.content}
+                          role={msg.role}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
-            {loading && (
+            {(loading || isThinking) && (
               <div className="flex justify-start animate-slideUp">
-                <div className="bg-white/10 text-foreground/90 px-4 py-3 rounded-lg rounded-bl-none flex items-center gap-2">
-                  <Loader2 size={16} className="animate-spin" />
-                  <span className="text-sm">L'IA répond...</span>
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                    <span className="text-xs font-bold text-white">G</span>
+                  </div>
+                  <ThinkingAnimation />
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </div>
 
       {/* Message Input Area */}
       <div
-        className="px-6 py-6 animate-slideUp"
+        className="px-8 py-6 animate-slideUp"
         style={{ animationDelay: "0.2s" }}
       >
         <div
-          className={`flex items-center gap-3 border-2 border-white rounded-2xl px-4 py-3 bg-background/50 transition-colors group ${!conversationId ? "opacity-50 cursor-not-allowed" : "hover:border-white/80"}`}
+          className={`flex items-center gap-3 border-2 border-white/30 rounded-2xl px-5 py-4 bg-gradient-to-r from-white/5 to-white/8 backdrop-blur-sm transition-all duration-300 group ${!conversationId ? "opacity-50 cursor-not-allowed" : "hover:border-white/50 hover:bg-gradient-to-r hover:from-white/8 hover:to-white/12 focus-within:border-white/80 focus-within:shadow-lg focus-within:shadow-white/10"}`}
         >
           <input
             id="message-input"
@@ -278,9 +312,11 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
             }}
             disabled={!conversationId || loading}
             placeholder={
-              conversationId ? "Message..." : "Sélectionnez une conversation..."
+              conversationId
+                ? "Votre message..."
+                : "Sélectionnez une conversation..."
             }
-            className="flex-1 bg-transparent text-foreground placeholder-foreground/50 focus:outline-none text-sm leading-relaxed disabled:opacity-50"
+            className="flex-1 bg-transparent text-white placeholder-white/40 focus:outline-none text-sm leading-relaxed disabled:opacity-50 transition-colors"
           />
 
           {/* Emoji Picker */}
@@ -288,19 +324,19 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
             <PopoverTrigger asChild>
               <button
                 id="emoji-btn"
-                className="p-2 text-foreground/60 hover:text-foreground transition-colors hover:bg-foreground/5 rounded-lg"
+                className="p-2 text-white/50 hover:text-white/80 transition-all duration-200 hover:bg-white/10 rounded-lg"
                 aria-label="Ajouter un emoji"
               >
-                <Smile size={18} />
+                <Smile size={20} />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 p-3 bg-card border-2 border-white rounded-2xl">
+            <PopoverContent className="w-64 p-3 bg-card border border-white/20 rounded-2xl shadow-xl">
               <div className="grid grid-cols-5 gap-2">
                 {EMOJIS.map((emoji) => (
                   <button
                     key={emoji}
                     onClick={() => addEmoji(emoji)}
-                    className="p-2 hover:bg-foreground/10 rounded-lg transition-colors text-xl hover:scale-110 transform"
+                    className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200 text-xl hover:scale-125 transform"
                   >
                     {emoji}
                   </button>
@@ -313,13 +349,13 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
           <button
             onClick={handleSend}
             disabled={loading || !message.trim()}
-            className="p-2 text-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:bg-foreground/10 rounded-lg flex items-center justify-center hover:scale-110 transform transition-transform"
+            className="p-2.5 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gradient-to-r hover:from-orange-600/40 hover:to-orange-500/30 rounded-lg flex items-center justify-center hover:scale-110 transform disabled:hover:scale-100"
             aria-label="Envoyer le message"
           >
             {loading ? (
-              <Loader2 size={18} className="animate-spin" />
+              <Loader2 size={20} className="animate-spin" />
             ) : (
-              <Send size={18} />
+              <Send size={20} />
             )}
           </button>
         </div>
