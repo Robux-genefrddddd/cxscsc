@@ -186,7 +186,21 @@ export const handleUpdateUserIPLogin: RequestHandler = async (req, res) => {
       return;
     }
 
+    // If Firebase Admin is not initialized, skip updating
+    if (!isAdminInitialized()) {
+      console.warn(
+        "Firebase Admin not initialized. Skipping IP login update. Set FIREBASE_SERVICE_ACCOUNT_KEY env var.",
+      );
+      res.json({ success: true });
+      return;
+    }
+
     const db = getAdminDb();
+    if (!db) {
+      res.json({ success: true });
+      return;
+    }
+
     const snapshot = await db
       .collection("user_ips")
       .where("userId", "==", userId)
