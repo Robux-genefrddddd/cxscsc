@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { TOSProvider, useTOS } from "@/contexts/TOSContext";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -23,6 +24,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import { BanModal } from "@/components/BanModal";
+import TOSModal from "@/components/TOSModal";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,7 @@ function AuthPages() {
 function AppRoutes() {
   const navigate = useNavigate();
   const { userData } = useAuth();
+  const { showTOS, acceptTOS } = useTOS();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -85,30 +88,42 @@ function AppRoutes() {
   }, [navigate, userData?.isAdmin]);
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <>
-            <AuthPages />
-            <Login />
-          </>
-        }
+    <>
+      <TOSModal
+        isOpen={showTOS}
+        onAccept={() => {
+          acceptTOS();
+          toast.success("Conditions d'utilisation acceptées!");
+        }}
+        onReject={() => {
+          toast.info("Vous devez accepter les conditions pour continuer");
+        }}
       />
-      <Route
-        path="/register"
-        element={
-          <>
-            <AuthPages />
-            <Register />
-          </>
-        }
-      />
-      <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
-      <Route path="/" element={<ProtectedRoute element={<Index />} />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <>
+              <AuthPages />
+              <Login />
+            </>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <>
+              <AuthPages />
+              <Register />
+            </>
+          }
+        />
+        <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
+        <Route path="/" element={<ProtectedRoute element={<Index />} />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
 
@@ -117,13 +132,15 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <ThemeProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter
-            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-          >
-            <AppRoutes />
-          </BrowserRouter>
+          <TOSProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter
+              future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+            >
+              <AppRoutes />
+            </BrowserRouter>
+          </TOSProvider>
         </ThemeProvider>
       </AuthProvider>
     </TooltipProvider>

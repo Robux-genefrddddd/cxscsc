@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { PlanType, UserData } from "@/contexts/AuthContext";
+import { useTOS } from "@/contexts/TOSContext";
 import { Mail, Lock, Key } from "lucide-react";
 import { toast } from "sonner";
 import { IPService } from "@/lib/ip-service";
@@ -11,7 +12,7 @@ import { IPService } from "@/lib/ip-service";
 interface CaptchaData {
   num1: number;
   num2: number;
-  operator: "+" | "-";
+  operator: "+";
   answer: number;
 }
 
@@ -22,6 +23,8 @@ export default function Register() {
   const [captcha, setCaptcha] = useState<CaptchaData | null>(null);
   const [captchaInput, setCaptchaInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
+  const { acceptTOS } = useTOS();
   const navigate = useNavigate();
 
   // Generate random math captcha on component mount
@@ -30,12 +33,11 @@ export default function Register() {
   }, []);
 
   const generateCaptcha = () => {
-    const num1 = Math.floor(Math.random() * 50) + 1;
-    const num2 = Math.floor(Math.random() * 50) + 1;
-    const operator = Math.random() > 0.5 ? "+" : "-";
-    const answer = operator === "+" ? num1 + num2 : num1 - num2;
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    const answer = num1 + num2;
 
-    setCaptcha({ num1, num2, operator, answer });
+    setCaptcha({ num1, num2, operator: "+", answer });
     setCaptchaInput("");
   };
 
@@ -73,6 +75,13 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check TOS acceptance
+    if (!tosAccepted) {
+      setShowTOSModal(true);
+      toast.error("Vous devez accepter les conditions d'utilisation");
+      return;
+    }
 
     // Verify captcha
     if (!verifyCaptcha()) {
@@ -491,9 +500,14 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-xs text-gray-600 animate-fadeIn">
-          © VanIA — Tous droits réservés
+        {/* Footer with TOS Info */}
+        <div className="text-center mt-6 text-xs text-gray-600 space-y-2 animate-fadeIn">
+          {tosAccepted && (
+            <div className="text-green-500 text-xs flex items-center justify-center gap-1">
+              ✓ Conditions acceptées
+            </div>
+          )}
+          <div>© VanIA — Tous droits réservés</div>
         </div>
       </div>
     </div>
