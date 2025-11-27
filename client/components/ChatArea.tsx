@@ -50,8 +50,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   const [loading, setLoading] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
-  const [deepSearchMode, setDeepSearchMode] = useState(false);
-  const [imageGenMode, setImageGenMode] = useState(false);
+  const [generatingImage, setGeneratingImage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
