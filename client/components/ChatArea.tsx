@@ -685,7 +685,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                   </div>
                 );
               })}
-              {(loading || isThinking || isTyping) && (
+              {(loading || isThinking || isTyping || isRenderingBlocks) && (
                 <div className="flex w-full justify-start animate-springFade">
                   <div className="flex gap-2 items-start max-w-lg">
                     <div
@@ -697,7 +697,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                     >
                       <span className="text-xs font-bold text-white">V</span>
                     </div>
-                    {isTyping ? <TypingIndicator /> : <ThinkingAnimation />}
+                    {isTyping || isRenderingBlocks ? <TypingIndicator /> : <ThinkingAnimation />}
                   </div>
                 </div>
               )}
