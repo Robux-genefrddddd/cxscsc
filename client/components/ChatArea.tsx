@@ -635,7 +635,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                               {blocks.slice(0, renderedBlockCount).map((block, blockIndex) => (
                                 <div
                                   key={blockIndex}
-                                  className="rounded-lg rounded-tl-none py-2 px-3 text-sm break-words transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
+                                  className="rounded-lg rounded-tl-none py-2 px-3 text-sm break-words transition-all duration-300"
                                   style={{
                                     backgroundColor: isDark ? "#111418" : "#E5E7EB",
                                     color: isDark ? "#E5E7EB" : "#1E1E1E",
@@ -647,9 +647,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                                     boxShadow: isDark
                                       ? "0 4px 16px rgba(0, 0, 0, 0.3)"
                                       : "0 2px 8px rgba(0, 0, 0, 0.08)",
-                                    animationDuration: "240ms",
-                                    animationDelay: `${blockIndex * 50}ms`,
-                                    animationFillMode: "both",
+                                    animation: `blockSlideUp 240ms cubic-bezier(0.34, 1.56, 0.64, 1) ${blockIndex * 50}ms both`,
                                   }}
                                 >
                                   <MessageRenderer
