@@ -115,34 +115,29 @@ export const handleCheckIPBan: RequestHandler = async (req, res) => {
 
 export const handleCheckIPLimit: RequestHandler = async (req, res) => {
   try {
-    const { ipAddress, maxAccounts } = req.body;
-
-    if (!ipAddress || !maxAccounts) {
-      res.status(400).json({ error: "IP address and maxAccounts required" });
-      return;
-    }
+    // Validate input
+    const validated = CheckIPLimitSchema.parse(req.body);
+    const { ipAddress, maxAccounts } = validated;
 
     // If Firebase Admin is not initialized, return no limit exceeded
     if (!isAdminInitialized()) {
       console.warn(
         "Firebase Admin not initialized. Set FIREBASE_SERVICE_ACCOUNT_KEY env var for IP limit checking.",
       );
-      res.json({
+      return res.json({
         accountCount: 0,
         maxAccounts,
         isLimitExceeded: false,
       });
-      return;
     }
 
     const db = getAdminDb();
     if (!db) {
-      res.json({
+      return res.json({
         accountCount: 0,
         maxAccounts,
         isLimitExceeded: false,
       });
-      return;
     }
 
     const snapshot = await db
@@ -153,14 +148,20 @@ export const handleCheckIPLimit: RequestHandler = async (req, res) => {
     const accountCount = snapshot.size;
     const isLimitExceeded = accountCount >= maxAccounts;
 
-    res.json({
+    return res.json({
       accountCount,
       maxAccounts,
       isLimitExceeded,
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        error: "Invalid request parameters",
+        details: error.errors,
+      });
+    }
     console.error("Error checking IP limit:", error);
-    res.status(500).json({ error: "Failed to check IP limit" });
+    return res.status(500).json({ error: "Failed to check IP limit" });
   }
 };
 
