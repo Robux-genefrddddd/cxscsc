@@ -302,7 +302,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
         style={{ animationDelay: "0.2s" }}
       >
         <div
-          className={`flex items-center gap-3 border-2 border-white/30 rounded-2xl px-5 py-4 bg-gradient-to-r from-white/5 to-white/8 backdrop-blur-sm transition-all duration-300 group ${!conversationId ? "opacity-50 cursor-not-allowed" : "hover:border-white/50 hover:bg-gradient-to-r hover:from-white/8 hover:to-white/12 focus-within:border-white/80 focus-within:shadow-lg focus-within:shadow-white/10"}`}
+          className={`flex items-center gap-3 border-2 border-white/40 rounded-2xl px-5 py-4 bg-gradient-to-r from-white/6 to-white/10 backdrop-blur-md transition-all duration-300 group shadow-lg shadow-white/5 ${!conversationId ? "opacity-50 cursor-not-allowed" : "hover:border-white/60 hover:bg-gradient-to-r hover:from-white/10 hover:to-white/15 hover:shadow-lg hover:shadow-white/10 focus-within:border-white/80 focus-within:shadow-xl focus-within:shadow-white/15"}`}
         >
           <input
             id="message-input"
