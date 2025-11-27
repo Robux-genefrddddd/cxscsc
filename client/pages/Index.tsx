@@ -122,21 +122,12 @@ export default function Index() {
         <div className="border-b border-white/20 px-4 md:px-6 py-4 backdrop-blur-md flex items-center justify-between bg-gradient-to-r from-background via-background/98 to-background/95 shadow-lg shadow-white/5">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2.5 hover:bg-white/15 rounded-lg transition-all duration-200 text-white/60 hover:text-white hover:scale-110 transform md:hidden"
-            aria-label="Menu"
+            className="p-2.5 hover:bg-white/15 rounded-lg transition-all duration-200 text-white/60 hover:text-white hover:scale-110 transform"
+            aria-label="Toggle Menu"
+            title="Toggle Menu"
           >
             <Menu size={20} />
           </button>
-          <div className="hidden md:flex items-center gap-3 ml-2">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2.5 hover:bg-white/15 rounded-lg transition-all duration-200 text-white/60 hover:text-white hover:scale-110 transform"
-              aria-label="Toggle Sidebar"
-              title="Toggle Sidebar"
-            >
-              <Menu size={20} />
-            </button>
-          </div>
 
           <div className="flex-1 text-center">
             <h1 className="text-lg font-bold text-white">
