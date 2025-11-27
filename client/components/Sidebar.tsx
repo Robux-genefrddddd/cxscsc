@@ -432,14 +432,22 @@ export function Sidebar({
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEditConversation(conv.id, conv.name)}
-                      className="p-1.5 text-foreground/60 hover:text-foreground hover:bg-white/10 rounded-lg transition-all hover:-translate-y-0.5"
+                      className={`p-1.5 rounded-lg transition-all hover:-translate-y-0.5 ${
+                        isDark
+                          ? "text-foreground/60 hover:text-foreground hover:bg-white/10"
+                          : "text-[#3F3F3F]/60 hover:text-[#1A1A1A] hover:bg-black/[0.08]"
+                      }`}
                       title="Edit"
                     >
                       <Edit2 size={14} />
                     </button>
                     <button
                       onClick={() => handleDeleteConversation(conv.id)}
-                      className="p-1.5 text-foreground/60 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all hover:-translate-y-0.5"
+                      className={`p-1.5 rounded-lg transition-all hover:-translate-y-0.5 ${
+                        isDark
+                          ? "text-foreground/60 hover:text-red-400 hover:bg-red-500/10"
+                          : "text-[#3F3F3F]/60 hover:text-red-600 hover:bg-red-100/50"
+                      }`}
                       title="Delete"
                     >
                       <Trash2 size={14} />
