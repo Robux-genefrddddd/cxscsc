@@ -101,7 +101,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0a0a0a]">
+    <>
+      <TOSModal
+        isOpen={showTOSModal}
+        onAccept={() => {
+          setShowTOSModal(false);
+          toast.success("Merci d'avoir lu les conditions!");
+        }}
+        onReject={() => {
+          setShowTOSModal(false);
+        }}
+      />
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0a0a0a]">
       {/* Premium Background with Gradient + Blur + Noise */}
       <div className="absolute inset-0 z-0">
         {/* Radial gradient spotlight effect */}
@@ -302,11 +313,19 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-xs text-gray-600 animate-fadeIn">
-          © VanIA — Tous droits réservés
+        {/* Footer with TOS Link */}
+        <div className="text-center mt-8 text-xs text-gray-600 space-y-2 animate-fadeIn">
+          <button
+            type="button"
+            onClick={() => setShowTOSModal(true)}
+            className="text-blue-400 hover:text-blue-300 underline transition-colors block w-full"
+          >
+            Conditions d'utilisation
+          </button>
+          <div>© VanIA — Tous droits réservés</div>
         </div>
       </div>
     </div>
+    </>
   );
 }
