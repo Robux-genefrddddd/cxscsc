@@ -553,18 +553,29 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                       </div>
                     ) : (
                       <div className="flex gap-2 items-start max-w-lg">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center flex-shrink-0 shadow-md border border-orange-400/50">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-md border transition-all duration-300 ${
+                            isDark
+                              ? "bg-gradient-to-br from-orange-500 to-orange-600 border-orange-400/50"
+                              : "bg-gradient-to-br from-orange-400 to-orange-500 border-orange-300/50"
+                          }`}
+                        >
                           <span className="text-xs font-bold text-white">
                             V
                           </span>
                         </div>
                         <div className="flex-1 max-w-md max-h-96 overflow-y-auto">
                           <div
-                            className="rounded-2xl rounded-tl-none px-4 py-3 text-white/90 text-sm leading-[1.55] break-words"
+                            className="rounded-2xl rounded-tl-none px-4 py-3 text-sm leading-[1.55] break-words transition-all duration-300"
                             style={{
-                              backgroundColor: "#111418",
-                              border: "1px solid rgba(255, 255, 255, 0.08)",
-                              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.3)",
+                              backgroundColor: isDark ? "#111418" : "#E5E7EB",
+                              color: isDark ? "#E5E7EB" : "#1E1E1E",
+                              border: isDark
+                                ? "1px solid rgba(255, 255, 255, 0.08)"
+                                : "1px solid rgba(0, 0, 0, 0.06)",
+                              boxShadow: isDark
+                                ? "0 4px 16px rgba(0, 0, 0, 0.3)"
+                                : "0 2px 8px rgba(0, 0, 0, 0.08)",
                             }}
                           >
                             <MessageRenderer
