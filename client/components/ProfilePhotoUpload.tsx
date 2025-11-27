@@ -162,18 +162,18 @@ export function ProfilePhotoUpload({
           >
             {uploading ? (
               <>
-                <Loader2 size={16} className="animate-spin" />
-                Téléchargement...
+                <Loader2 size={14} className="animate-spin" />
+                <span className="hidden sm:inline">Téléchargement...</span>
               </>
             ) : preview ? (
               <>
-                <Upload size={16} />
-                Changer
+                <Upload size={14} />
+                <span>Changer</span>
               </>
             ) : (
               <>
-                <Upload size={16} />
-                Télécharger
+                <Upload size={14} />
+                <span>Télécharger</span>
               </>
             )}
           </button>
