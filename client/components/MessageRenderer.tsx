@@ -272,7 +272,8 @@ function parseInlineMarkdown(text: string): ReactNode[] {
   // Render with formatting
   allMatches.forEach((m, idx) => {
     if (m.start > lastIndex) {
-      parts.push(text.substring(lastIndex, m.start));
+      // Escape plain text to prevent XSS
+      parts.push(escapeHtml(text.substring(lastIndex, m.start)));
     }
 
     switch (m.type) {
