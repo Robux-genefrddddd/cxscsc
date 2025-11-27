@@ -75,16 +75,6 @@ export default function AdminUsersList({
       }
 
       const usersList = data.users as UserData[];
-
-      // Load IP information for each user
-      const ipsMap: Record<string, UserIP[]> = {};
-      for (const user of usersList) {
-        if (user.uid) {
-          const ips = await IPService.getUserIPs(user.uid);
-          ipsMap[user.uid] = ips;
-        }
-      }
-      setUserIPs(ipsMap);
       setUsers(usersList);
     } catch (error) {
       console.error("Error loading users:", error);
