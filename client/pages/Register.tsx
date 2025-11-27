@@ -230,20 +230,7 @@ export default function Register() {
   };
 
   return (
-    <>
-      <TOSModal
-        isOpen={showTOSModal}
-        onAccept={() => {
-          setTosAccepted(true);
-          setShowTOSModal(false);
-          toast.success("Conditions acceptées!");
-        }}
-        onReject={() => {
-          setShowTOSModal(false);
-          setTosAccepted(false);
-        }}
-      />
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0a0a0a]">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0a0a0a]">
       {/* Premium Background with Gradient + Blur + Noise */}
       <div className="absolute inset-0 z-0">
         {/* Radial gradient spotlight effect */}
@@ -513,26 +500,16 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Footer with TOS Link */}
+        {/* Footer with TOS Info */}
         <div className="text-center mt-6 text-xs text-gray-600 space-y-2 animate-fadeIn">
-          <button
-            type="button"
-            onClick={() => setShowTOSModal(true)}
-            className="text-blue-400 hover:text-blue-300 underline transition-colors"
-          >
-            Lire les conditions d'utilisation
-          </button>
-          <div>
-            {tosAccepted && (
-              <span className="text-green-500 text-xs flex items-center justify-center gap-1">
-                ✓ Conditions acceptées
-              </span>
-            )}
-          </div>
+          {tosAccepted && (
+            <div className="text-green-500 text-xs flex items-center justify-center gap-1">
+              ✓ Conditions acceptées
+            </div>
+          )}
           <div>© VanIA — Tous droits réservés</div>
         </div>
       </div>
     </div>
-    </>
   );
 }
