@@ -3,7 +3,6 @@ import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import { ReactNode } from "react";
-import "highlight.js/styles/atom-one-dark.css";
 
 interface MessageRendererProps {
   content: string;
