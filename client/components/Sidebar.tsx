@@ -356,7 +356,13 @@ export function Sidebar({
               </Popover>
             </div>
           </div>
-          <p className="text-xs text-foreground/50 truncate hidden sm:block">
+          <p
+            className={`text-xs truncate hidden sm:block transition-colors duration-300 ${
+              isDark
+                ? "text-foreground/50"
+                : "text-[#3F3F3F]/50"
+            }`}
+          >
             {loading ? "..." : userData?.email}
           </p>
         </div>
