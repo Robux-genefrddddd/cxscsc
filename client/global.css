@@ -310,6 +310,10 @@
     animation: threeDotPulse 1.4s infinite;
   }
 
+  .animate-blockSlideUp {
+    animation: blockSlideUp 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   /* Smooth scrolling with iOS-like friction */
   html {
     scroll-behavior: smooth;
