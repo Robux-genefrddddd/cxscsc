@@ -57,26 +57,21 @@ export interface UserIP {
 
 export const handleCheckIPBan: RequestHandler = async (req, res) => {
   try {
-    const { ipAddress } = req.body;
-
-    if (!ipAddress) {
-      res.status(400).json({ error: "IP address required" });
-      return;
-    }
+    // Validate input
+    const validated = CheckIPBanSchema.parse(req.body);
+    const { ipAddress } = validated;
 
     // If Firebase Admin is not initialized, return no ban
     if (!isAdminInitialized()) {
       console.warn(
         "Firebase Admin not initialized. Set FIREBASE_SERVICE_ACCOUNT_KEY env var for IP ban checking.",
       );
-      res.json({ banned: false });
-      return;
+      return res.json({ banned: false });
     }
 
     const db = getAdminDb();
     if (!db) {
-      res.json({ banned: false });
-      return;
+      return res.json({ banned: false });
     }
 
     const snapshot = await db
@@ -85,8 +80,7 @@ export const handleCheckIPBan: RequestHandler = async (req, res) => {
       .get();
 
     if (snapshot.empty) {
-      res.json({ banned: false });
-      return;
+      return res.json({ banned: false });
     }
 
     const banDoc = snapshot.docs[0];
@@ -98,19 +92,24 @@ export const handleCheckIPBan: RequestHandler = async (req, res) => {
       if (new Date() > expiresAt) {
         // Ban has expired, delete it
         await banDoc.ref.delete();
-        res.json({ banned: false });
-        return;
+        return res.json({ banned: false });
       }
     }
 
-    res.json({
+    return res.json({
       banned: true,
       reason: banData.reason,
       expiresAt: banData.expiresAt ? banData.expiresAt.toDate() : null,
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        error: "Invalid IP address format",
+        details: error.errors,
+      });
+    }
     console.error("Error checking IP ban:", error);
-    res.status(500).json({ error: "Failed to check IP ban" });
+    return res.status(500).json({ error: "Failed to check IP ban" });
   }
 };
 
