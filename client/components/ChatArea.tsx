@@ -23,7 +23,7 @@ const EMOJIS = [
   "😡",
   "🎉",
   "🔥",
-  "👍",
+  "����",
   "❤️",
   "✨",
   "🚀",
@@ -248,10 +248,8 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                 {msg.role === "user" ? (
                   <div className="flex gap-3 max-w-2xl items-start">
                     <div className="flex-1 max-w-lg">
-                      <div className="rounded-2xl rounded-tr-none bg-gradient-to-br from-blue-600/40 to-blue-700/30 border border-blue-500/30 px-5 py-3 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow">
-                        <p className="text-white/95 text-sm leading-relaxed break-words">
-                          <MessageRenderer content={msg.content} role={msg.role} />
-                        </p>
+                      <div className="rounded-2xl rounded-tr-none bg-gradient-to-br from-blue-600/40 to-blue-700/30 border border-blue-500/30 px-5 py-3 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow text-white/95 text-sm leading-relaxed break-words">
+                        <MessageRenderer content={msg.content} role={msg.role} />
                       </div>
                     </div>
                   </div>
