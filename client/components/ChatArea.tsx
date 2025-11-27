@@ -64,6 +64,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   const [isThinking, setIsThinking] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Rate limiter: max 30 messages per minute
   const messageRateLimiter = useRef(new RateLimiter("send_message", 30, 60000));
