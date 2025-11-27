@@ -45,20 +45,20 @@ export function SettingsModal({ isOpen, onOpenChange }: SettingsModalProps) {
     try {
       const newDarkMode = !darkMode;
       setDarkMode(newDarkMode);
-      
+
       if (user?.uid) {
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
           darkMode: newDarkMode,
         });
-        
+
         if (newDarkMode) {
           document.documentElement.classList.add("dark");
         } else {
           document.documentElement.classList.remove("dark");
         }
       }
-      
+
       localStorage.setItem("darkMode", JSON.stringify(newDarkMode));
       toast.success(newDarkMode ? "Mode sombre activé" : "Mode clair activé");
     } catch (error) {
@@ -83,7 +83,7 @@ export function SettingsModal({ isOpen, onOpenChange }: SettingsModalProps) {
       setHasChanges(false);
       setSaveSuccess(true);
       toast.success("Paramètres sauvegardés");
-      
+
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (error) {
       console.error("Error saving settings:", error);
@@ -142,10 +142,7 @@ export function SettingsModal({ isOpen, onOpenChange }: SettingsModalProps) {
             )}
 
             {/* Section 2: Display Name / Pseudo */}
-            <div
-              className="animate-fadeIn"
-              style={{ animationDelay: "0.1s" }}
-            >
+            <div className="animate-fadeIn" style={{ animationDelay: "0.1s" }}>
               <h3 className="text-xs font-semibold text-foreground/80 uppercase tracking-wider mb-3">
                 Pseudo
               </h3>
@@ -170,10 +167,7 @@ export function SettingsModal({ isOpen, onOpenChange }: SettingsModalProps) {
             </div>
 
             {/* Section 3: Dark Mode */}
-            <div
-              className="animate-fadeIn"
-              style={{ animationDelay: "0.15s" }}
-            >
+            <div className="animate-fadeIn" style={{ animationDelay: "0.15s" }}>
               <h3 className="text-xs font-semibold text-foreground/80 uppercase tracking-wider mb-3">
                 Apparence
               </h3>
@@ -183,14 +177,12 @@ export function SettingsModal({ isOpen, onOpenChange }: SettingsModalProps) {
                     Mode sombre
                   </p>
                 </div>
-                
+
                 {/* iOS 17 Style Toggle */}
                 <button
                   onClick={handleDarkModeToggle}
                   className={`relative w-12 h-7 rounded-full transition-all duration-300 flex items-center ${
-                    darkMode
-                      ? "bg-primary/40"
-                      : "bg-white/[0.1]"
+                    darkMode ? "bg-primary/40" : "bg-white/[0.1]"
                   }`}
                 >
                   <div
@@ -209,10 +201,7 @@ export function SettingsModal({ isOpen, onOpenChange }: SettingsModalProps) {
             </div>
 
             {/* Section 4: Email Display */}
-            <div
-              className="animate-fadeIn"
-              style={{ animationDelay: "0.2s" }}
-            >
+            <div className="animate-fadeIn" style={{ animationDelay: "0.2s" }}>
               <h3 className="text-xs font-semibold text-foreground/80 uppercase tracking-wider mb-3">
                 Compte
               </h3>

@@ -311,7 +311,10 @@ export function Sidebar({
         </div>
 
         {/* Conversations List */}
-        <div id="conversations-list" className="flex-1 overflow-y-auto px-3 py-2">
+        <div
+          id="conversations-list"
+          className="flex-1 overflow-y-auto px-3 py-2"
+        >
           <div className="space-y-2">
             {conversations.map((conv, idx) => (
               <div
@@ -373,11 +376,13 @@ export function Sidebar({
             marginLeft: "20px",
             marginTop: "16px",
             marginBottom: "22px",
-            maxWidth: "calc(100% - 40px)"
+            maxWidth: "calc(100% - 40px)",
           }}
         >
           <div className="flex items-center gap-2 mb-2.5 justify-between">
-            <span className="text-xs text-foreground/70 font-medium">Messages</span>
+            <span className="text-xs text-foreground/70 font-medium">
+              Messages
+            </span>
             <button
               onClick={handleSyncMessages}
               disabled={isSyncing}
@@ -385,7 +390,10 @@ export function Sidebar({
               title="Synchroniser"
             >
               {isSyncing ? (
-                <Loader2 size={14} className="animate-spin text-foreground/60" />
+                <Loader2
+                  size={14}
+                  className="animate-spin text-foreground/60"
+                />
               ) : (
                 <svg
                   className="w-4 h-4 text-foreground/60 hover:text-foreground transition-colors"
