@@ -37,21 +37,15 @@ export function initializeFirebaseAdmin() {
 }
 
 export function getAdminDb() {
-  if (!adminDb) {
-    throw new Error(
-      "Firebase Admin not initialized. Set FIREBASE_SERVICE_ACCOUNT_KEY env var.",
-    );
-  }
   return adminDb;
 }
 
 export function getAdminAuth() {
-  if (!adminAuth) {
-    throw new Error(
-      "Firebase Admin not initialized. Set FIREBASE_SERVICE_ACCOUNT_KEY env var.",
-    );
-  }
   return adminAuth;
+}
+
+export function isAdminInitialized(): boolean {
+  return adminDb !== null && adminAuth !== null;
 }
 
 export class FirebaseAdminService {
