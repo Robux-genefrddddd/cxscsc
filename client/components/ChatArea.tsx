@@ -263,10 +263,10 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   return (
     <div
       id="chat-area"
-      className="flex-1 flex flex-col bg-background min-h-0"
+      className="flex-1 flex flex-col bg-gradient-to-b from-background via-background to-background/95 min-h-0"
     >
       {/* Main Content Area - Messages Container with Fixed Height & Scrollbar */}
-      <div className="flex-1 overflow-y-auto flex flex-col px-4 sm:px-6 md:px-8 py-4 sm:py-6 animate-fadeIn space-y-3 sm:space-y-4 min-h-0">
+      <div className="flex-1 overflow-y-auto flex flex-col px-4 sm:px-6 md:px-8 py-4 sm:py-6 animate-fadeIn space-y-4 sm:space-y-6 min-h-0">
         {!conversationId ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
