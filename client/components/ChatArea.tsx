@@ -249,7 +249,12 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                 } animate-slideUp`}
               >
                 {msg.role === "user" ? (
-                  <div className="flex gap-3 max-w-2xl items-start">
+                  <div className="flex gap-3 max-w-2xl items-start flex-row-reverse">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md border border-blue-400/50 ring-2 ring-blue-400/20">
+                      <span className="text-xs font-bold text-white">
+                        {user?.displayName?.[0]?.toUpperCase() || "U"}
+                      </span>
+                    </div>
                     <div className="flex-1 max-w-lg">
                       <div className="rounded-2xl rounded-tr-none bg-gradient-to-br from-blue-600/40 to-blue-700/30 border border-blue-500/30 px-5 py-3 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow text-white/95 text-sm leading-relaxed break-words">
                         <MessageRenderer
