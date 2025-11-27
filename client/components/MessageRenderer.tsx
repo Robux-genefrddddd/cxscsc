@@ -38,8 +38,8 @@ function CodeBlock({
           {lang}
         </div>
       )}
-      <pre className="p-4 overflow-x-auto">
-        <code className={className}>{children}</code>
+      <pre className="p-4 overflow-x-auto text-white/90">
+        <code className="font-mono text-sm leading-relaxed">{children}</code>
       </pre>
     </div>
   );
