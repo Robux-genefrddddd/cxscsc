@@ -13,6 +13,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
