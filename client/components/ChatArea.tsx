@@ -85,6 +85,57 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
     textareaRef.current.style.height = `${newHeight}px`;
   };
 
+  const getCharacterDelay = (char: string, nextChar?: string): number => {
+    const baseDelay = 20;
+    if (char === "." || char === "?" || char === "!") {
+      return 200;
+    }
+    if (char === ",") {
+      return 80;
+    }
+    if (char === "\n") {
+      return 100;
+    }
+    return baseDelay;
+  };
+
+  const startTypewriterEffect = (text: string) => {
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+    }
+
+    setIsTyping(true);
+    setTypingText("");
+    setFullText(text);
+    let currentIndex = 0;
+
+    const typeNextCharacter = () => {
+      if (currentIndex < text.length) {
+        const newText = text.substring(0, currentIndex + 1);
+        setTypingText(newText);
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
+        const currentChar = text[currentIndex];
+        const delay = getCharacterDelay(currentChar);
+
+        typingIntervalRef.current = setTimeout(
+          typeNextCharacter,
+          delay,
+        ) as unknown as NodeJS.Timeout;
+
+        currentIndex++;
+      } else {
+        setIsTyping(false);
+        typingIntervalRef.current = null;
+      }
+    };
+
+    typingIntervalRef.current = setTimeout(
+      typeNextCharacter,
+      20,
+    ) as unknown as NodeJS.Timeout;
+  };
+
   useEffect(() => {
     if (conversationId && user?.uid) {
       loadMessages();
