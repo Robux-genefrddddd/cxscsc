@@ -166,6 +166,93 @@ export default function AdminMaintenanceSection() {
     }
   };
 
+  const handleMaintenanceConfirm = async (
+    type: MaintenanceType,
+    data: MaintenanceData,
+  ) => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Non authentifié");
+
+      const idToken = await currentUser.getIdToken();
+
+      let endpoint = "";
+      let body: any = {};
+
+      if (type === "global") {
+        endpoint = "/api/admin/enable-global-maintenance";
+        body = { message: data.message };
+      } else if (type === "partial") {
+        endpoint = "/api/admin/enable-partial-maintenance";
+        body = { services: data.services || [], message: data.message };
+      }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.message || responseData.error || "Erreur lors de l'opération",
+        );
+      }
+
+      await fetchMaintenanceStatus();
+      toast.success("Maintenance activée avec succès");
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
+      toast.error(errorMsg);
+      console.error("Error enabling maintenance:", error);
+    }
+  };
+
+  const handleDisableMaintenance = async (type: "global" | "partial") => {
+    try {
+      setLoading(`disable-${type}`);
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Non authentifié");
+
+      const idToken = await currentUser.getIdToken();
+
+      const endpoint =
+        type === "global"
+          ? "/api/admin/disable-global-maintenance"
+          : "/api/admin/disable-partial-maintenance";
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Erreur lors de l'opération");
+      }
+
+      await fetchMaintenanceStatus();
+      toast.success("Maintenance désactivée");
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
+      toast.error(errorMsg);
+      console.error("Error disabling maintenance:", error);
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
