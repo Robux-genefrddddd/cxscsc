@@ -1,0 +1,278 @@
+import { useState } from "react";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
+import {
+  Loader2,
+  Trash2,
+  Settings,
+  AlertCircle,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
+
+export default function AdminMaintenanceSection() {
+  const [loading, setLoading] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{
+    action: string;
+    title: string;
+    description: string;
+  } | null>(null);
+  const [clearDays, setClearDays] = useState(90);
+  const [lastAction, setLastAction] = useState<{
+    action: string;
+    result: string;
+    count: number;
+    timestamp: Date;
+  } | null>(null);
+
+  const handleClearLogs = async () => {
+    setLoading("clear-logs");
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Not authenticated");
+
+      const idToken = await currentUser.getIdToken();
+      const response = await fetch("/api/admin/clear-logs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ daysOld: clearDays }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clear logs");
+      }
+
+      const data = await response.json();
+      setLastAction({
+        action: "clear-logs",
+        result: `Supprimé ${data.deleted} anciens journaux`,
+        count: data.deleted,
+        timestamp: new Date(),
+      });
+
+      toast.success(`${data.deleted} anciens journaux supprimés`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erreur lors de l'opération",
+      );
+    } finally {
+      setLoading(null);
+      setConfirmAction(null);
+    }
+  };
+
+  const handlePurgeLicenses = async () => {
+    setLoading("purge-licenses");
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Not authenticated");
+
+      const idToken = await currentUser.getIdToken();
+      const response = await fetch("/api/admin/purge-licenses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to purge licenses");
+      }
+
+      const data = await response.json();
+      setLastAction({
+        action: "purge-licenses",
+        result: `${data.deleted} licences invalides purgées`,
+        count: data.deleted,
+        timestamp: new Date(),
+      });
+
+      toast.success(`${data.deleted} licences invalides supprimées`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erreur lors de l'opération",
+      );
+    } finally {
+      setLoading(null);
+      setConfirmAction(null);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold text-white">
+          Maintenance système
+        </h2>
+        <p className="text-sm text-foreground/60 mt-1">
+          Outils d'administration et de maintenance
+        </p>
+      </div>
+
+      {/* Last Action Alert */}
+      {lastAction && (
+        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 size={20} className="text-emerald-400 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-emerald-300">
+                Opération réussie
+              </p>
+              <p className="text-sm text-emerald-300/70 mt-1">
+                {lastAction.result}
+              </p>
+              <p className="text-xs text-emerald-300/50 mt-2">
+                {lastAction.timestamp.toLocaleTimeString("fr-FR")}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Operations */}
+      <div className="space-y-4">
+        {/* Clear Logs Section */}
+        <div className="rounded-lg border border-white/5 bg-white/[0.02] p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="font-medium text-white flex items-center gap-2">
+                <Trash2 size={18} />
+                Nettoyer les journaux
+              </h3>
+              <p className="text-sm text-foreground/60 mt-1">
+                Supprimer les journaux admin de plus de X jours
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
+                Supprimer les logs de plus de {clearDays} jours
+              </label>
+              <input
+                type="range"
+                min="1"
+                max="365"
+                value={clearDays}
+                onChange={(e) => setClearDays(parseInt(e.target.value))}
+                disabled={loading === "clear-logs"}
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              />
+              <p className="text-xs text-foreground/50 mt-2">
+                Les journaux plus anciens que {clearDays} jours seront supprimés
+              </p>
+            </div>
+
+            <button
+              onClick={() =>
+                setConfirmAction({
+                  action: "clear-logs",
+                  title: "Confirmer la suppression des journaux",
+                  description: `Êtes-vous sûr de vouloir supprimer tous les journaux de plus de ${clearDays} jours ?`,
+                })
+              }
+              disabled={loading === "clear-logs"}
+              className="w-full px-4 py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading === "clear-logs" && (
+                <Loader2 size={16} className="animate-spin" />
+              )}
+              Nettoyer les journaux
+            </button>
+          </div>
+        </div>
+
+        {/* Purge Licenses Section */}
+        <div className="rounded-lg border border-white/5 bg-white/[0.02] p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="font-medium text-white flex items-center gap-2">
+                <Settings size={18} />
+                Purger les licences invalides
+              </h3>
+              <p className="text-sm text-foreground/60 mt-1">
+                Supprimer toutes les licences marquées comme invalides
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-lg bg-white/5 border border-white/5 mb-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle size={18} className="text-amber-400 mt-0.5" />
+              <p className="text-sm text-foreground/80">
+                Cette opération supprimera définitivement toutes les licences marquées comme invalides.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() =>
+              setConfirmAction({
+                action: "purge-licenses",
+                title: "Confirmer la purge des licences",
+                description:
+                  "Êtes-vous sûr de vouloir supprimer toutes les licences invalides ?",
+              })
+            }
+            disabled={loading === "purge-licenses"}
+            className="w-full px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {loading === "purge-licenses" && (
+              <Loader2 size={16} className="animate-spin" />
+            )}
+            Purger les licences invalides
+          </button>
+        </div>
+      </div>
+
+      {/* Confirmation Modal */}
+      {confirmAction && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-lg max-w-md w-full">
+            <div className="p-6 border-b border-white/5">
+              <div className="flex items-start gap-3">
+                <AlertTriangle size={24} className="text-red-400 mt-0.5" />
+                <div>
+                  <h2 className="text-lg font-semibold text-white">
+                    {confirmAction.title}
+                  </h2>
+                  <p className="text-sm text-foreground/70 mt-2">
+                    {confirmAction.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-white/5 flex items-center gap-3">
+              <button
+                onClick={() => setConfirmAction(null)}
+                disabled={loading !== null}
+                className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={
+                  confirmAction.action === "clear-logs"
+                    ? handleClearLogs
+                    : handlePurgeLicenses
+                }
+                disabled={loading !== null}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {loading && <Loader2 size={16} className="animate-spin" />}
+                Confirmer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
