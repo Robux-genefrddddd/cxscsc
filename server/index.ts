@@ -20,12 +20,18 @@ import {
   handleGetLicenses,
   handleCreateLicense,
   handleInvalidateLicense,
+  handleDeleteLicense,
   handleGetAIConfig as handleGetAIConfigAdmin,
   handleUpdateAIConfig as handleUpdateAIConfigAdmin,
   handleGetSystemStats,
   handlePurgeLicenses,
   handleGetAdminLogs,
   handleClearOldLogs,
+  handleGetMaintenanceStatus,
+  handleEnableGlobalMaintenance,
+  handleDisableGlobalMaintenance,
+  handleEnablePartialMaintenance,
+  handleDisablePartialMaintenance,
 } from "./routes/admin";
 import {
   handleCheckIPBan,
