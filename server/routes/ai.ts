@@ -188,15 +188,21 @@ export const handleAIChat: RequestHandler = async (req, res) => {
 export const handleGetAIConfig: RequestHandler = async (req, res) => {
   try {
     const db = getAdminDb();
-    const configDoc = await db.collection("settings").doc("ai_config").get();
+    if (!db) {
+      return res.json({
+        model: "x-ai/grok-4.1-fast:free",
+        temperature: 0.7,
+        maxTokens: 2048,
+      });
+    }
 
+    const configDoc = await db.collection("settings").doc("ai_config").get();
     const config = configDoc.exists ? configDoc.data() : {};
 
     return res.json({
       model: config.model || "x-ai/grok-4.1-fast:free",
       temperature: config.temperature || 0.7,
       maxTokens: config.maxTokens || 2048,
-      // Never return system prompt to client
     });
   } catch (error) {
     console.error("Get AI config error:", error);

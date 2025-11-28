@@ -5,11 +5,7 @@ import { handleDemo } from "./routes/demo";
 import { handleGetIP, handleCheckVPN } from "./routes/ip-detection";
 import { handleActivateLicense } from "./routes/license";
 import { handleDailyReset } from "./routes/daily-reset";
-import {
-  handleAIChat,
-  handleGetAIConfig,
-  handleUpdateAIConfig,
-} from "./routes/ai";
+import { handleAIChat } from "./routes/ai";
 import {
   handleVerifyAdmin,
   handleGetAllUsers,
@@ -19,12 +15,17 @@ import {
   handleUnbanUser,
   handleResetMessages,
   handleDeleteUser,
+  handleUpdateUserPlan,
+  handleGetBannedUsers,
   handleGetLicenses,
   handleCreateLicense,
-  handleGetAIConfig,
-  handleUpdateAIConfig,
+  handleInvalidateLicense,
+  handleGetAIConfig as handleGetAIConfigAdmin,
+  handleUpdateAIConfig as handleUpdateAIConfigAdmin,
   handleGetSystemStats,
   handlePurgeLicenses,
+  handleGetAdminLogs,
+  handleClearOldLogs,
 } from "./routes/admin";
 import {
   handleCheckIPBan,
@@ -128,7 +129,6 @@ export function createServer() {
   // AI chat route (requires auth, very strict rate limit - 10 requests per minute per user)
   apiRouter.post("/ai/chat", serverRateLimit(60000, 10), handleAIChat);
   apiRouter.get("/ai/config", handleGetAIConfigSettings);
-  apiRouter.put("/ai/config", serverRateLimit(60000, 5), handleUpdateAIConfig);
 
   // Admin routes (require authentication + stricter rate limiting)
   const adminRateLimit = serverRateLimit(60000, 10); // 10 requests per minute per user
@@ -141,18 +141,33 @@ export function createServer() {
   apiRouter.post("/admin/unban-user", adminRateLimit, handleUnbanUser);
   apiRouter.post("/admin/reset-messages", adminRateLimit, handleResetMessages);
   apiRouter.post("/admin/delete-user", adminRateLimit, handleDeleteUser);
+  apiRouter.post(
+    "/admin/update-user-plan",
+    adminRateLimit,
+    handleUpdateUserPlan,
+  );
+  apiRouter.get("/admin/banned-users", adminRateLimit, handleGetBannedUsers);
 
   // License management
   apiRouter.get("/admin/licenses", adminRateLimit, handleGetLicenses);
   apiRouter.post("/admin/create-license", adminRateLimit, handleCreateLicense);
+  apiRouter.post(
+    "/admin/invalidate-license",
+    adminRateLimit,
+    handleInvalidateLicense,
+  );
   apiRouter.post("/admin/purge-licenses", adminRateLimit, handlePurgeLicenses);
 
-  // AI configuration
-  apiRouter.get("/admin/ai-config", adminRateLimit, handleGetAIConfig);
-  apiRouter.put("/admin/ai-config", adminRateLimit, handleUpdateAIConfig);
+  // AI configuration (admin only)
+  apiRouter.get("/admin/ai-config", adminRateLimit, handleGetAIConfigAdmin);
+  apiRouter.put("/admin/ai-config", adminRateLimit, handleUpdateAIConfigAdmin);
 
   // System stats
   apiRouter.get("/admin/system-stats", adminRateLimit, handleGetSystemStats);
+
+  // Admin logs
+  apiRouter.get("/admin/logs", adminRateLimit, handleGetAdminLogs);
+  apiRouter.post("/admin/clear-logs", adminRateLimit, handleClearOldLogs);
 
   // Verification
   apiRouter.post("/admin/verify", adminRateLimit, handleVerifyAdmin);
