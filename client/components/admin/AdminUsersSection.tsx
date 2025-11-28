@@ -10,6 +10,7 @@ import {
   RotateCcw,
   Trash2,
   ChevronDown,
+  AlertCircle,
 } from "lucide-react";
 import ActionConfirmModal from "./ActionConfirmModal";
 
@@ -24,6 +25,7 @@ export default function AdminUsersSection() {
     plan?: "Free" | "Classic" | "Pro";
   } | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadUsers();
@@ -32,29 +34,32 @@ export default function AdminUsersSection() {
   const loadUsers = async () => {
     try {
       setLoading(true);
+      setError(null);
       const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error("Not authenticated");
+      if (!currentUser) throw new Error("Non authentifié");
 
       const idToken = await currentUser.getIdToken();
       const response = await fetch("/api/admin/users", {
         headers: { Authorization: `Bearer ${idToken}` },
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error("Invalid response from server");
-      }
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to load users");
+        throw new Error(data.message || data.error || "Erreur serveur");
+      }
+
+      if (!data.success || !data.users) {
+        throw new Error("Format de réponse invalide");
       }
 
       setUsers(data.users || []);
     } catch (error) {
-      toast.error("Erreur lors du chargement des utilisateurs");
-      console.error("Error:", error);
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors du chargement";
+      setError(errorMsg);
+      toast.error(errorMsg);
+      console.error("Error loading users:", error);
     } finally {
       setLoading(false);
     }
@@ -68,7 +73,7 @@ export default function AdminUsersSection() {
 
     try {
       const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error("Not authenticated");
+      if (!currentUser) throw new Error("Non authentifié");
 
       const idToken = await currentUser.getIdToken();
 
@@ -110,15 +115,10 @@ export default function AdminUsersSection() {
         body: JSON.stringify(body),
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error("Invalid response");
-      }
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Action failed");
+        throw new Error(data.message || data.error || "Action échouée");
       }
 
       setUsers((prev) =>
@@ -138,7 +138,11 @@ export default function AdminUsersSection() {
                 Classic: 100,
                 Pro: 1000,
               };
-              return { ...u, plan: plan as any, messagesLimit: planLimits[plan || "Free"] };
+              return {
+                ...u,
+                plan: plan as any,
+                messagesLimit: planLimits[plan || "Free"],
+              };
             default:
               return u;
           }
@@ -161,9 +165,10 @@ export default function AdminUsersSection() {
         setUsers((prev) => prev.filter((u) => u.uid !== userId));
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erreur lors de l'action",
-      );
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'action";
+      toast.error(errorMsg);
+      console.error("Action error:", error);
     } finally {
       setActionLoading(null);
       setConfirmAction(null);
@@ -191,6 +196,23 @@ export default function AdminUsersSection() {
           </p>
         </div>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <AlertCircle size={20} className="text-red-400 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-red-300">{error}</p>
+              <button
+                onClick={loadUsers}
+                className="text-xs text-red-300/70 hover:text-red-300 mt-2 underline"
+              >
+                Réessayer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-4 gap-4">
