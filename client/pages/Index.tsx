@@ -8,7 +8,6 @@ import { Sidebar } from "@/components/Sidebar";
 import { ChatArea } from "@/components/ChatArea";
 import { SystemNoticeModal } from "@/components/SystemNoticeModal";
 import { MessageLimitModal } from "@/components/MessageLimitModal";
-import { DisclaimerModal } from "@/components/DisclaimerModal";
 import { Menu, Loader2 } from "lucide-react";
 import { MessagesService } from "@/lib/messages";
 import { toast } from "sonner";
@@ -18,9 +17,6 @@ export default function Index() {
   const { isDark } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string>();
-  const [disclaimerAccepted, setDisclaimerAccepted] = useState(
-    userData?.disclaimerAccepted || false,
-  );
   const [acknowledgedMaintenance, setAcknowledgedMaintenance] = useState(false);
 
   useEffect(() => {
