@@ -550,4 +550,112 @@ export class FirebaseAdminService {
 
     await this.logAdminAction(adminUid, "UPDATE_AI_CONFIG", config);
   }
+
+  // Maintenance management
+
+  // Get maintenance status
+  static async getMaintenanceStatus() {
+    if (!adminDb) throw new Error("Database not initialized");
+
+    try {
+      const doc = await adminDb.collection("settings").doc("maintenance").get();
+      if (!doc.exists) {
+        return {
+          global: false,
+          partial: false,
+          services: [],
+          message: "",
+          startedAt: null,
+        };
+      }
+      return doc.data();
+    } catch (error) {
+      console.error("Error getting maintenance status:", error);
+      return {
+        global: false,
+        partial: false,
+        services: [],
+        message: "",
+        startedAt: null,
+      };
+    }
+  }
+
+  // Enable global maintenance
+  static async enableGlobalMaintenance(
+    adminUid: string,
+    message: string = "",
+  ) {
+    if (!adminDb) throw new Error("Database not initialized");
+
+    await adminDb.collection("settings").doc("maintenance").set({
+      global: true,
+      partial: false,
+      services: [],
+      message: message || "Le site est actuellement en maintenance",
+      startedAt: Timestamp.now(),
+      enabledBy: adminUid,
+    });
+
+    await this.logAdminAction(adminUid, "ENABLE_GLOBAL_MAINTENANCE", {
+      message,
+    });
+  }
+
+  // Disable global maintenance
+  static async disableGlobalMaintenance(adminUid: string) {
+    if (!adminDb) throw new Error("Database not initialized");
+
+    await adminDb.collection("settings").doc("maintenance").set({
+      global: false,
+      partial: false,
+      services: [],
+      message: "",
+      startedAt: null,
+      disabledAt: Timestamp.now(),
+      disabledBy: adminUid,
+    });
+
+    await this.logAdminAction(adminUid, "DISABLE_GLOBAL_MAINTENANCE", {});
+  }
+
+  // Enable partial maintenance
+  static async enablePartialMaintenance(
+    adminUid: string,
+    services: string[] = [],
+    message: string = "",
+  ) {
+    if (!adminDb) throw new Error("Database not initialized");
+
+    await adminDb.collection("settings").doc("maintenance").set({
+      global: false,
+      partial: true,
+      services,
+      message: message || "Certains services peuvent être indisponibles",
+      startedAt: Timestamp.now(),
+      enabledBy: adminUid,
+    });
+
+    await this.logAdminAction(adminUid, "ENABLE_PARTIAL_MAINTENANCE", {
+      services,
+      message,
+    });
+  }
+
+  // Disable partial maintenance
+  static async disablePartialMaintenance(adminUid: string) {
+    if (!adminDb) throw new Error("Database not initialized");
+
+    await adminDb.collection("settings").doc("maintenance").set({
+      global: false,
+      partial: false,
+      services: [],
+      message: "",
+      startedAt: null,
+      disabledAt: Timestamp.now(),
+      disabledBy: adminUid,
+    });
+
+    await this.logAdminAction(adminUid, "DISABLE_PARTIAL_MAINTENANCE", {});
+  }
 }
