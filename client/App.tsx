@@ -66,6 +66,56 @@ function AuthPages() {
   return user ? <Navigate to="/" replace /> : <></>;
 }
 
+interface MaintenanceStatus {
+  global: boolean;
+  partial: boolean;
+  services: string[];
+  message: string;
+  startedAt: any;
+}
+
+function MaintenanceWrapper({ children }: { children: React.ReactNode }) {
+  const { user, userData } = useAuth();
+  const [maintenanceStatus, setMaintenanceStatus] = useState<MaintenanceStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkMaintenance = async () => {
+      try {
+        const response = await fetch("/api/admin/maintenance-status");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.status) {
+            setMaintenanceStatus(data.status);
+          }
+        }
+      } catch (error) {
+        console.error("Error checking maintenance:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkMaintenance();
+    const interval = setInterval(checkMaintenance, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-white" />
+      </div>
+    );
+  }
+
+  if (maintenanceStatus?.global && !userData?.isAdmin) {
+    return <MaintenanceScreen />;
+  }
+
+  return <>{children}</>;
+}
+
 function AppRoutes() {
   const navigate = useNavigate();
   const { userData } = useAuth();
@@ -89,7 +139,7 @@ function AppRoutes() {
   }, [navigate, userData?.isAdmin]);
 
   return (
-    <>
+    <MaintenanceWrapper>
       <TOSModal
         isOpen={showTOS}
         onAccept={() => {
@@ -124,7 +174,7 @@ function AppRoutes() {
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </>
+    </MaintenanceWrapper>
   );
 }
 
