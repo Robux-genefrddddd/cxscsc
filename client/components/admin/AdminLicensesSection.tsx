@@ -375,6 +375,54 @@ export default function AdminLicensesSection() {
           </div>
         </div>
       )}
+
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-lg max-w-md w-full">
+            <div className="p-6 border-b border-white/5">
+              <div className="flex items-start gap-3">
+                <AlertTriangle size={24} className="text-red-400 mt-0.5" />
+                <div>
+                  <h2 className="text-lg font-semibold text-white">
+                    Supprimer la licence
+                  </h2>
+                  <p className="text-sm text-foreground/70 mt-2">
+                    Êtes-vous sûr de vouloir supprimer définitivement cette licence ?
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-white/[0.02] border-y border-white/5">
+              <div className="flex items-center gap-2">
+                <code className="flex-1 text-xs bg-white/10 px-3 py-2 rounded text-amber-400 font-mono break-all">
+                  {deleteConfirm}
+                </code>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-white/5 flex items-center gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                disabled={deletingKey !== null}
+                className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => deleteLicense(deleteConfirm)}
+                disabled={deletingKey !== null}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {deletingKey === deleteConfirm && (
+                  <Loader2 size={16} className="animate-spin" />
+                )}
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
