@@ -29,7 +29,7 @@ export default function AdminMaintenanceSection() {
     setLoading("clear-logs");
     try {
       const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error("Not authenticated");
+      if (!currentUser) throw new Error("Non authentifié");
 
       const idToken = await currentUser.getIdToken();
       const response = await fetch("/api/admin/clear-logs", {
@@ -41,11 +41,16 @@ export default function AdminMaintenanceSection() {
         body: JSON.stringify({ daysOld: clearDays }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to clear logs");
+        throw new Error(data.message || data.error || "Erreur lors de l'opération");
       }
 
-      const data = await response.json();
+      if (!data.success) {
+        throw new Error("L'opération a échoué");
+      }
+
       setLastAction({
         action: "clear-logs",
         result: `Supprimé ${data.deleted} anciens journaux`,
@@ -55,9 +60,10 @@ export default function AdminMaintenanceSection() {
 
       toast.success(`${data.deleted} anciens journaux supprimés`);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erreur lors de l'opération",
-      );
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
+      toast.error(errorMsg);
+      console.error("Error clearing logs:", error);
     } finally {
       setLoading(null);
       setConfirmAction(null);
@@ -68,7 +74,7 @@ export default function AdminMaintenanceSection() {
     setLoading("purge-licenses");
     try {
       const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error("Not authenticated");
+      if (!currentUser) throw new Error("Non authentifié");
 
       const idToken = await currentUser.getIdToken();
       const response = await fetch("/api/admin/purge-licenses", {
@@ -79,11 +85,16 @@ export default function AdminMaintenanceSection() {
         },
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to purge licenses");
+        throw new Error(data.message || data.error || "Erreur lors de l'opération");
       }
 
-      const data = await response.json();
+      if (!data.success) {
+        throw new Error("L'opération a échoué");
+      }
+
       setLastAction({
         action: "purge-licenses",
         result: `${data.deleted} licences invalides purgées`,
@@ -93,9 +104,10 @@ export default function AdminMaintenanceSection() {
 
       toast.success(`${data.deleted} licences invalides supprimées`);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erreur lors de l'opération",
-      );
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
+      toast.error(errorMsg);
+      console.error("Error purging licenses:", error);
     } finally {
       setLoading(null);
       setConfirmAction(null);
@@ -104,7 +116,6 @@ export default function AdminMaintenanceSection() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h2 className="text-lg font-semibold text-white">
           Maintenance système
@@ -114,7 +125,6 @@ export default function AdminMaintenanceSection() {
         </p>
       </div>
 
-      {/* Last Action Alert */}
       {lastAction && (
         <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
           <div className="flex items-start gap-3">
@@ -134,9 +144,7 @@ export default function AdminMaintenanceSection() {
         </div>
       )}
 
-      {/* Operations */}
       <div className="space-y-4">
-        {/* Clear Logs Section */}
         <div className="rounded-lg border border-white/5 bg-white/[0.02] p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
@@ -162,7 +170,7 @@ export default function AdminMaintenanceSection() {
                 value={clearDays}
                 onChange={(e) => setClearDays(parseInt(e.target.value))}
                 disabled={loading === "clear-logs"}
-                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-amber-500 disabled:opacity-50"
               />
               <p className="text-xs text-foreground/50 mt-2">
                 Les journaux plus anciens que {clearDays} jours seront supprimés
@@ -188,7 +196,6 @@ export default function AdminMaintenanceSection() {
           </div>
         </div>
 
-        {/* Purge Licenses Section */}
         <div className="rounded-lg border border-white/5 bg-white/[0.02] p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
@@ -206,7 +213,8 @@ export default function AdminMaintenanceSection() {
             <div className="flex items-start gap-3">
               <AlertCircle size={18} className="text-amber-400 mt-0.5" />
               <p className="text-sm text-foreground/80">
-                Cette opération supprimera définitivement toutes les licences marquées comme invalides.
+                Cette opération supprimera définitivement toutes les licences
+                marquées comme invalides.
               </p>
             </div>
           </div>
@@ -231,7 +239,6 @@ export default function AdminMaintenanceSection() {
         </div>
       </div>
 
-      {/* Confirmation Modal */}
       {confirmAction && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-[#1a1a1a] border border-white/10 rounded-lg max-w-md w-full">
