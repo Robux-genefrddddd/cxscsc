@@ -250,6 +250,29 @@ export const handleInvalidateLicense: RequestHandler = async (req, res) => {
   }
 };
 
+// Delete license
+export const handleDeleteLicense: RequestHandler = async (req, res) => {
+  try {
+    const idToken = extractIdToken(req.headers.authorization);
+    const adminUid = await FirebaseAdminService.verifyAdmin(idToken);
+
+    const { licenseKey } = z
+      .object({
+        licenseKey: LicenseKeySchema,
+      })
+      .parse(req.body);
+
+    await FirebaseAdminService.deleteLicense(adminUid, licenseKey);
+
+    return res.json({ success: true, message: "License deleted" });
+  } catch (error) {
+    console.error("Delete license error:", error);
+    const status = error instanceof z.ZodError ? 400 : 401;
+    const message = error instanceof Error ? error.message : "Operation failed";
+    return res.status(status).json({ success: false, message });
+  }
+};
+
 // Get AI config
 export const handleGetAIConfig: RequestHandler = async (req, res) => {
   try {
