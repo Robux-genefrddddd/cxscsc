@@ -432,6 +432,7 @@ export default function AdminUsersSection() {
         <ActionConfirmModal
           type={confirmAction.type}
           email={confirmAction.email}
+          plan={confirmAction.plan}
           onConfirm={executeAction}
           onCancel={() => setConfirmAction(null)}
           isLoading={actionLoading === confirmAction.userId}
