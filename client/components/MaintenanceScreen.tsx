@@ -1,11 +1,11 @@
 export default function MaintenanceScreen() {
   return (
     <div className="fixed inset-0 bg-[#0a0a0a] z-[9999] flex items-center justify-center">
-      <div className="text-center max-w-md px-6">
-        <div className="mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-white/10 mb-6">
+      <div className="text-center max-w-md px-6 space-y-6">
+        <div className="flex justify-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10">
             <svg
-              className="w-8 h-8 text-foreground/60"
+              className="w-10 h-10 text-foreground/60"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -20,20 +20,25 @@ export default function MaintenanceScreen() {
           </div>
         </div>
 
-        <h1 className="text-2xl font-semibold text-white mb-3">
-          Maintenance en cours
-        </h1>
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-white">Site en maintenance</h1>
+          <p className="text-foreground/70 leading-relaxed">
+            Nous effectuons actuellement des travaux de maintenance pour vous
+            offrir une meilleure expérience.
+          </p>
+        </div>
 
-        <p className="text-foreground/70 mb-8 leading-relaxed">
-          Le site est actuellement indisponible pour maintenance.
-        </p>
+        <div className="pt-4 space-y-2">
+          <p className="text-sm text-foreground/60">
+            Nos équipes travaillent à la restauration du service. Veuillez réessayer
+            dans quelques minutes.
+          </p>
+          <p className="text-xs text-foreground/40">
+            Merci de votre patience et de votre compréhension.
+          </p>
+        </div>
 
-        <p className="text-sm text-foreground/50">
-          Nos équipes travaillent à la restauration du service. Veuillez
-          réessayer dans quelques minutes.
-        </p>
-
-        <div className="mt-12 pt-8 border-t border-white/5">
+        <div className="pt-8 border-t border-white/5">
           <p className="text-xs text-foreground/40">
             © {new Date().getFullYear()} KeySystem
           </p>
