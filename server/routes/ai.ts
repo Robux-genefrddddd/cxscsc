@@ -38,6 +38,13 @@ export const handleAIChat: RequestHandler = async (req, res) => {
 
     // Get user data and verify credits
     const db = getAdminDb();
+
+    if (!db) {
+      return res.status(503).json({
+        error: "Service temporarily unavailable. Firebase not initialized.",
+      });
+    }
+
     const userDocRef = db.collection("users").doc(userId);
     const userDocSnap = await userDocRef.get();
 
