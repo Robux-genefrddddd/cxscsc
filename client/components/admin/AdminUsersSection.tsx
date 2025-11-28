@@ -130,6 +130,10 @@ export default function AdminUsersSection() {
               return { ...u, isAdmin: true };
             case "demote":
               return { ...u, isAdmin: false };
+            case "ban":
+              return { ...u, isBanned: true as any };
+            case "unban":
+              return { ...u, isBanned: false as any };
             case "reset":
               return { ...u, messagesUsed: 0 };
             case "plan":
