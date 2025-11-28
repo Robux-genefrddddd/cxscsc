@@ -248,6 +248,13 @@ export const handleUpdateAIConfig: RequestHandler = async (req, res) => {
 
     // Verify admin
     const auth = getAdminAuth();
+
+    if (!auth) {
+      return res.status(503).json({
+        error: "Service temporarily unavailable. Firebase not initialized.",
+      });
+    }
+
     let decoded;
     try {
       decoded = await auth.verifyIdToken(validatedIdToken);
