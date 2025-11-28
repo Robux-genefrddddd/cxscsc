@@ -132,18 +132,30 @@ export function createServer() {
 
   // Admin routes (require authentication + stricter rate limiting)
   const adminRateLimit = serverRateLimit(60000, 10); // 10 requests per minute per user
-  apiRouter.post("/admin/verify", adminRateLimit, handleVerifyAdmin);
-  apiRouter.post("/admin/ban-user", adminRateLimit, handleBanUser);
-  apiRouter.post("/admin/ban-ip", adminRateLimit, handleBanIP);
-  apiRouter.post("/admin/delete-user", adminRateLimit, handleDeleteUser);
+
+  // User management
+  apiRouter.get("/admin/users", adminRateLimit, handleGetAllUsers);
   apiRouter.post("/admin/promote-user", adminRateLimit, handlePromoteUser);
   apiRouter.post("/admin/demote-user", adminRateLimit, handleDemoteUser);
-  apiRouter.post("/admin/reset-messages", adminRateLimit, handleResetMessages);
+  apiRouter.post("/admin/ban-user", adminRateLimit, handleBanUser);
   apiRouter.post("/admin/unban-user", adminRateLimit, handleUnbanUser);
-  apiRouter.get("/admin/users", adminRateLimit, handleGetAllUsers);
+  apiRouter.post("/admin/reset-messages", adminRateLimit, handleResetMessages);
+  apiRouter.post("/admin/delete-user", adminRateLimit, handleDeleteUser);
+
+  // License management
   apiRouter.get("/admin/licenses", adminRateLimit, handleGetLicenses);
   apiRouter.post("/admin/create-license", adminRateLimit, handleCreateLicense);
+  apiRouter.post("/admin/purge-licenses", adminRateLimit, handlePurgeLicenses);
+
+  // AI configuration
+  apiRouter.get("/admin/ai-config", adminRateLimit, handleGetAIConfig);
+  apiRouter.put("/admin/ai-config", adminRateLimit, handleUpdateAIConfig);
+
+  // System stats
   apiRouter.get("/admin/system-stats", adminRateLimit, handleGetSystemStats);
+
+  // Verification
+  apiRouter.post("/admin/verify", adminRateLimit, handleVerifyAdmin);
 
   // Mount API router
   app.use("/api", apiRouter);
