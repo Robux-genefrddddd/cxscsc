@@ -50,13 +50,12 @@ export const handlePromoteUser: RequestHandler = async (req, res) => {
 
     await FirebaseAdminService.promoteUser(adminUid, userId);
 
-    res.json({ success: true, message: "User promoted to admin" });
+    return res.json({ success: true, message: "User promoted to admin" });
   } catch (error) {
     console.error("Promote user error:", error);
     const status = error instanceof z.ZodError ? 400 : 401;
-    res.status(status).json({
-      message: error instanceof Error ? error.message : "Operation failed",
-    });
+    const message = error instanceof Error ? error.message : "Operation failed";
+    return res.status(status).json({ success: false, message });
   }
 };
 
@@ -70,13 +69,12 @@ export const handleDemoteUser: RequestHandler = async (req, res) => {
 
     await FirebaseAdminService.demoteUser(adminUid, userId);
 
-    res.json({ success: true, message: "User demoted" });
+    return res.json({ success: true, message: "User demoted" });
   } catch (error) {
     console.error("Demote user error:", error);
     const status = error instanceof z.ZodError ? 400 : 401;
-    res.status(status).json({
-      message: error instanceof Error ? error.message : "Operation failed",
-    });
+    const message = error instanceof Error ? error.message : "Operation failed";
+    return res.status(status).json({ success: false, message });
   }
 };
 
@@ -95,13 +93,12 @@ export const handleBanUser: RequestHandler = async (req, res) => {
 
     await FirebaseAdminService.banUser(adminUid, userId, reason);
 
-    res.json({ success: true, message: "User banned" });
+    return res.json({ success: true, message: "User banned" });
   } catch (error) {
     console.error("Ban user error:", error);
     const status = error instanceof z.ZodError ? 400 : 401;
-    res.status(status).json({
-      message: error instanceof Error ? error.message : "Operation failed",
-    });
+    const message = error instanceof Error ? error.message : "Operation failed";
+    return res.status(status).json({ success: false, message });
   }
 };
 
