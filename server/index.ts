@@ -162,6 +162,11 @@ export function createServer() {
     adminRateLimit,
     handleInvalidateLicense,
   );
+  apiRouter.post(
+    "/admin/delete-license",
+    adminRateLimit,
+    handleDeleteLicense,
+  );
   apiRouter.post("/admin/purge-licenses", adminRateLimit, handlePurgeLicenses);
 
   // AI configuration (admin only)
