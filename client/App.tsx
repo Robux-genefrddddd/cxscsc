@@ -15,7 +15,10 @@ import {
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { TOSProvider, useTOS } from "@/contexts/TOSContext";
-import { MaintenanceProvider, useMaintenance } from "@/contexts/MaintenanceContext";
+import {
+  MaintenanceProvider,
+  useMaintenance,
+} from "@/contexts/MaintenanceContext";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -163,7 +166,10 @@ const App = () => (
             <TOSProvider>
               <Sonner />
               <BrowserRouter
-                future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+                future={{
+                  v7_startTransition: true,
+                  v7_relativeSplatPath: true,
+                }}
               >
                 <AppRoutes />
               </BrowserRouter>

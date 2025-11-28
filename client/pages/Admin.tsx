@@ -66,7 +66,9 @@ export default function Admin() {
           <div className="flex items-start justify-between gap-4">
             {/* Header Content */}
             <div>
-                  <h1 className="text-[28px] font-bold text-white">Panneau Admin</h1>
+              <h1 className="text-[28px] font-bold text-white">
+                Panneau Admin
+              </h1>
               <p className="text-14px text-white/60 mt-1">
                 Gestion et monitoring du système
               </p>
@@ -83,7 +85,10 @@ export default function Admin() {
                 className="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all duration-200 group"
                 title="Déconnexion"
               >
-                <LogOut size={18} className="group-hover:scale-110 transition-transform" />
+                <LogOut
+                  size={18}
+                  className="group-hover:scale-110 transition-transform"
+                />
               </button>
             </div>
           </div>

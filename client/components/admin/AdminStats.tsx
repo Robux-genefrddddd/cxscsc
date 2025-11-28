@@ -27,11 +27,15 @@ interface StatCardProps {
 
 function StatCard({ title, value, change, trend, lastUpdated }: StatCardProps) {
   return (
-    <div className={`${dsClasses.card} p-6 flex flex-col gap-3 group hover:border-white/10 transition-all duration-200`}>
+    <div
+      className={`${dsClasses.card} p-6 flex flex-col gap-3 group hover:border-white/10 transition-all duration-200`}
+    >
       <div className="flex items-center justify-between">
-        <p className="text-white/70 text-13px font-medium uppercase tracking-wide">{title}</p>
+        <p className="text-white/70 text-13px font-medium uppercase tracking-wide">
+          {title}
+        </p>
       </div>
-      
+
       <div className="flex items-end gap-2">
         <span className="text-3xl font-bold text-white">{value}</span>
         {change && (
@@ -50,9 +54,7 @@ function StatCard({ title, value, change, trend, lastUpdated }: StatCardProps) {
       </div>
 
       {lastUpdated && (
-        <p className="text-11px text-white/40 mt-auto">
-          {lastUpdated}
-        </p>
+        <p className="text-11px text-white/40 mt-auto">{lastUpdated}</p>
       )}
     </div>
   );
@@ -101,10 +103,16 @@ export default function AdminStats() {
   }
 
   if (!stats) {
-    return <div className="text-white/60 text-14px">Impossible de charger les statistiques</div>;
+    return (
+      <div className="text-white/60 text-14px">
+        Impossible de charger les statistiques
+      </div>
+    );
   }
 
-  const storagePercent = Math.round((stats.storage.used / stats.storage.total) * 100);
+  const storagePercent = Math.round(
+    (stats.storage.used / stats.storage.total) * 100,
+  );
 
   return (
     <div className="space-y-6">
@@ -144,19 +152,29 @@ export default function AdminStats() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className={`${dsClasses.card} p-4 space-y-3`}>
           <div className="flex items-center justify-between">
-            <span className="text-white/70 text-12px font-medium uppercase">Santé système</span>
-            <span className={`text-12px font-semibold ${stats.systemHealth === "Optimal" ? "text-emerald-400" : "text-amber-400"}`}>
+            <span className="text-white/70 text-12px font-medium uppercase">
+              Santé système
+            </span>
+            <span
+              className={`text-12px font-semibold ${stats.systemHealth === "Optimal" ? "text-emerald-400" : "text-amber-400"}`}
+            >
               {stats.systemHealth}
             </span>
           </div>
-          <p className="text-12px text-white/70">Uptime: {stats.uptime.toFixed(2)}% • Latence: {stats.avgLatency}ms</p>
+          <p className="text-12px text-white/70">
+            Uptime: {stats.uptime.toFixed(2)}% • Latence: {stats.avgLatency}ms
+          </p>
           <p className="text-11px text-white/40">Statut optimal</p>
         </div>
 
         <div className={`${dsClasses.card} p-4 space-y-3`}>
           <div className="flex items-center justify-between">
-            <span className="text-white/70 text-12px font-medium uppercase">Requêtes API</span>
-            <span className="text-emerald-400 text-12px font-semibold">Actif</span>
+            <span className="text-white/70 text-12px font-medium uppercase">
+              Requêtes API
+            </span>
+            <span className="text-emerald-400 text-12px font-semibold">
+              Actif
+            </span>
           </div>
           <p className="text-12px text-white/70">Performance: Normal</p>
           <p className="text-11px text-white/40">Aucune alerte</p>
@@ -164,8 +182,12 @@ export default function AdminStats() {
 
         <div className={`${dsClasses.card} p-4 space-y-3`}>
           <div className="flex items-center justify-between">
-            <span className="text-white/70 text-12px font-medium uppercase">Stockage</span>
-            <span className={`text-12px font-semibold ${storagePercent > 80 ? "text-amber-400" : "text-emerald-400"}`}>
+            <span className="text-white/70 text-12px font-medium uppercase">
+              Stockage
+            </span>
+            <span
+              className={`text-12px font-semibold ${storagePercent > 80 ? "text-amber-400" : "text-emerald-400"}`}
+            >
               {storagePercent}%
             </span>
           </div>

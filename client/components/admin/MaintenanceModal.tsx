@@ -209,7 +209,11 @@ export default function MaintenanceModal({
           </button>
           <button
             onClick={handleConfirm}
-            disabled={isLoading || confirming || (selectedType === "planned" && !plannedTime)}
+            disabled={
+              isLoading ||
+              confirming ||
+              (selectedType === "planned" && !plannedTime)
+            }
             className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {confirming && <Loader2 size={16} className="animate-spin" />}

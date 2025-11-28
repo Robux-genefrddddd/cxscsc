@@ -624,7 +624,11 @@ export const handleEnablePlannedMaintenance: RequestHandler = async (
       })
       .parse(req.body);
 
-    await FirebaseAdminService.enablePlannedMaintenance(adminUid, plannedTime, message);
+    await FirebaseAdminService.enablePlannedMaintenance(
+      adminUid,
+      plannedTime,
+      message,
+    );
 
     return res.json({ success: true, message: "Planned maintenance enabled" });
   } catch (error) {

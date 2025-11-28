@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function MaintenanceBanner() {
   const { maintenance } = useMaintenance();
   const [dismissedBanners, setDismissedBanners] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   if (!maintenance) return null;
@@ -21,7 +21,9 @@ export default function MaintenanceBanner() {
       key: "partial",
       type: "partial",
       icon: AlertTriangle,
-      message: maintenance.message || "Certains services peuvent être instables en raison d'une maintenance en cours.",
+      message:
+        maintenance.message ||
+        "Certains services peuvent être instables en raison d'une maintenance en cours.",
       bgColor: "bg-amber-500/10",
       borderColor: "border-amber-500/30",
       iconColor: "text-amber-400",
@@ -45,7 +47,8 @@ export default function MaintenanceBanner() {
       key: "ia",
       type: "ia",
       icon: AlertCircle,
-      message: maintenance.message || "Le service IA est temporairement indisponible.",
+      message:
+        maintenance.message || "Le service IA est temporairement indisponible.",
       bgColor: "bg-purple-500/10",
       borderColor: "border-purple-500/30",
       iconColor: "text-purple-400",
@@ -57,7 +60,9 @@ export default function MaintenanceBanner() {
       key: "license",
       type: "license",
       icon: AlertCircle,
-      message: maintenance.message || "Le service de gestion des licences est en maintenance.",
+      message:
+        maintenance.message ||
+        "Le service de gestion des licences est en maintenance.",
       bgColor: "bg-rose-500/10",
       borderColor: "border-rose-500/30",
       iconColor: "text-rose-400",
@@ -76,7 +81,10 @@ export default function MaintenanceBanner() {
             className={`rounded-lg border ${banner.borderColor} ${banner.bgColor} p-3 flex items-start justify-between gap-3`}
           >
             <div className="flex items-start gap-3 flex-1">
-              <Icon size={18} className={`${banner.iconColor} mt-0.5 flex-shrink-0`} />
+              <Icon
+                size={18}
+                className={`${banner.iconColor} mt-0.5 flex-shrink-0`}
+              />
               <p className="text-sm text-foreground/80">{banner.message}</p>
             </div>
             <button
@@ -84,7 +92,10 @@ export default function MaintenanceBanner() {
               className="p-0.5 hover:bg-white/10 rounded transition-colors flex-shrink-0"
               aria-label="Dismiss"
             >
-              <X size={16} className="text-foreground/60 hover:text-foreground/80" />
+              <X
+                size={16}
+                className="text-foreground/60 hover:text-foreground/80"
+              />
             </button>
           </div>
         );

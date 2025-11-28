@@ -28,7 +28,8 @@ interface ActionConfirmationState {
 export default function AdminMaintenanceSection() {
   const { maintenance } = useMaintenance();
   const [loading, setLoading] = useState<string | null>(null);
-  const [confirmAction, setConfirmAction] = useState<ActionConfirmationState | null>(null);
+  const [confirmAction, setConfirmAction] =
+    useState<ActionConfirmationState | null>(null);
   const [clearDays, setClearDays] = useState(90);
   const [lastAction, setLastAction] = useState<{
     action: string;
@@ -87,13 +88,16 @@ export default function AdminMaintenanceSection() {
 
       if (!response.ok) {
         throw new Error(
-          responseData.message || responseData.error || "Erreur lors de l'opération",
+          responseData.message ||
+            responseData.error ||
+            "Erreur lors de l'opération",
         );
       }
 
       toast.success("Maintenance activée avec succès");
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Erreur lors de l'opération";
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
       toast.error(errorMsg);
       console.error("Error enabling maintenance:", error);
     } finally {
@@ -141,12 +145,15 @@ export default function AdminMaintenanceSection() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Erreur lors de l'opération");
+        throw new Error(
+          data.message || data.error || "Erreur lors de l'opération",
+        );
       }
 
       toast.success("Maintenance désactivée");
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Erreur lors de l'opération";
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
       toast.error(errorMsg);
       console.error("Error disabling maintenance:", error);
     } finally {
@@ -174,7 +181,9 @@ export default function AdminMaintenanceSection() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Erreur lors de l'opération");
+        throw new Error(
+          data.message || data.error || "Erreur lors de l'opération",
+        );
       }
 
       if (!data.success) {
@@ -190,7 +199,8 @@ export default function AdminMaintenanceSection() {
 
       toast.success(`${data.deleted} anciens journaux supprimés`);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Erreur lors de l'opération";
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
       toast.error(errorMsg);
       console.error("Error clearing logs:", error);
     } finally {
@@ -217,7 +227,9 @@ export default function AdminMaintenanceSection() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Erreur lors de l'opération");
+        throw new Error(
+          data.message || data.error || "Erreur lors de l'opération",
+        );
       }
 
       if (!data.success) {
@@ -233,7 +245,8 @@ export default function AdminMaintenanceSection() {
 
       toast.success(`${data.deleted} licences invalides supprimées`);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Erreur lors de l'opération";
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
       toast.error(errorMsg);
       console.error("Error purging licenses:", error);
     } finally {
@@ -245,139 +258,149 @@ export default function AdminMaintenanceSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-white">Maintenance système</h2>
+        <h2 className="text-lg font-semibold text-white">
+          Maintenance système
+        </h2>
         <p className="text-sm text-foreground/60 mt-1">
           Outils d'administration et de maintenance
         </p>
       </div>
 
-      {maintenance && (maintenance.global || maintenance.partial || maintenance.ia || maintenance.license || maintenance.planned) && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
-          <div className="flex items-start gap-3">
-            <AlertTriangle size={20} className="text-red-400 mt-0.5" />
-            <div className="flex-1 space-y-2">
-              {maintenance.global && (
-                <p className="text-sm font-medium text-red-300">
-                  Maintenance globale active
-                </p>
-              )}
-              {maintenance.partial && (
-                <p className="text-sm font-medium text-red-300">
-                  Maintenance partielle active
-                </p>
-              )}
-              {maintenance.ia && (
-                <p className="text-sm font-medium text-red-300">
-                  Maintenance IA active
-                </p>
-              )}
-              {maintenance.license && (
-                <p className="text-sm font-medium text-red-300">
-                  Maintenance Licences active
-                </p>
-              )}
-              {maintenance.planned && (
-                <p className="text-sm font-medium text-red-300">
-                  Maintenance planifiée active
-                </p>
-              )}
-              {maintenance.message && (
-                <p className="text-sm text-red-300/70">{maintenance.message}</p>
-              )}
-              <div className="flex flex-wrap gap-2 mt-2">
+      {maintenance &&
+        (maintenance.global ||
+          maintenance.partial ||
+          maintenance.ia ||
+          maintenance.license ||
+          maintenance.planned) && (
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle size={20} className="text-red-400 mt-0.5" />
+              <div className="flex-1 space-y-2">
                 {maintenance.global && (
-                  <button
-                    onClick={() =>
-                      setConfirmAction({
-                        action: "disable-global",
-                        title: "Désactiver la maintenance globale",
-                        description:
-                          "Le site redevient accessible à tous les utilisateurs.",
-                        confirmText: "Désactiver",
-                        isDangerous: false,
-                      })
-                    }
-                    disabled={loading !== null}
-                    className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
-                  >
-                    Désactiver la maintenance globale
-                  </button>
+                  <p className="text-sm font-medium text-red-300">
+                    Maintenance globale active
+                  </p>
                 )}
                 {maintenance.partial && (
-                  <button
-                    onClick={() =>
-                      setConfirmAction({
-                        action: "disable-partial",
-                        title: "Désactiver la maintenance partielle",
-                        description:
-                          "L'affichage du message de maintenance disparaît.",
-                        confirmText: "Désactiver",
-                        isDangerous: false,
-                      })
-                    }
-                    disabled={loading !== null}
-                    className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
-                  >
-                    Désactiver la maintenance partielle
-                  </button>
+                  <p className="text-sm font-medium text-red-300">
+                    Maintenance partielle active
+                  </p>
                 )}
                 {maintenance.ia && (
-                  <button
-                    onClick={() =>
-                      setConfirmAction({
-                        action: "disable-ia",
-                        title: "Désactiver la maintenance IA",
-                        description: "Le service IA redevient disponible.",
-                        confirmText: "Désactiver",
-                        isDangerous: false,
-                      })
-                    }
-                    disabled={loading !== null}
-                    className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
-                  >
-                    Désactiver IA
-                  </button>
+                  <p className="text-sm font-medium text-red-300">
+                    Maintenance IA active
+                  </p>
                 )}
                 {maintenance.license && (
-                  <button
-                    onClick={() =>
-                      setConfirmAction({
-                        action: "disable-licenses",
-                        title: "Désactiver la maintenance des licences",
-                        description:
-                          "Le service de gestion des licences redevient disponible.",
-                        confirmText: "Désactiver",
-                        isDangerous: false,
-                      })
-                    }
-                    disabled={loading !== null}
-                    className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
-                  >
-                    Désactiver Licences
-                  </button>
+                  <p className="text-sm font-medium text-red-300">
+                    Maintenance Licences active
+                  </p>
                 )}
                 {maintenance.planned && (
-                  <button
-                    onClick={() =>
-                      setConfirmAction({
-                        action: "disable-planned",
-                        title: "Désactiver la maintenance planifiée",
-                        description: "L'annonce de maintenance est supprimée.",
-                        confirmText: "Désactiver",
-                        isDangerous: false,
-                      })
-                    }
-                    disabled={loading !== null}
-                    className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
-                  >
-                    Désactiver Planifiée
-                  </button>
+                  <p className="text-sm font-medium text-red-300">
+                    Maintenance planifiée active
+                  </p>
                 )}
+                {maintenance.message && (
+                  <p className="text-sm text-red-300/70">
+                    {maintenance.message}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {maintenance.global && (
+                    <button
+                      onClick={() =>
+                        setConfirmAction({
+                          action: "disable-global",
+                          title: "Désactiver la maintenance globale",
+                          description:
+                            "Le site redevient accessible à tous les utilisateurs.",
+                          confirmText: "Désactiver",
+                          isDangerous: false,
+                        })
+                      }
+                      disabled={loading !== null}
+                      className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
+                    >
+                      Désactiver la maintenance globale
+                    </button>
+                  )}
+                  {maintenance.partial && (
+                    <button
+                      onClick={() =>
+                        setConfirmAction({
+                          action: "disable-partial",
+                          title: "Désactiver la maintenance partielle",
+                          description:
+                            "L'affichage du message de maintenance disparaît.",
+                          confirmText: "Désactiver",
+                          isDangerous: false,
+                        })
+                      }
+                      disabled={loading !== null}
+                      className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
+                    >
+                      Désactiver la maintenance partielle
+                    </button>
+                  )}
+                  {maintenance.ia && (
+                    <button
+                      onClick={() =>
+                        setConfirmAction({
+                          action: "disable-ia",
+                          title: "Désactiver la maintenance IA",
+                          description: "Le service IA redevient disponible.",
+                          confirmText: "Désactiver",
+                          isDangerous: false,
+                        })
+                      }
+                      disabled={loading !== null}
+                      className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
+                    >
+                      Désactiver IA
+                    </button>
+                  )}
+                  {maintenance.license && (
+                    <button
+                      onClick={() =>
+                        setConfirmAction({
+                          action: "disable-licenses",
+                          title: "Désactiver la maintenance des licences",
+                          description:
+                            "Le service de gestion des licences redevient disponible.",
+                          confirmText: "Désactiver",
+                          isDangerous: false,
+                        })
+                      }
+                      disabled={loading !== null}
+                      className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
+                    >
+                      Désactiver Licences
+                    </button>
+                  )}
+                  {maintenance.planned && (
+                    <button
+                      onClick={() =>
+                        setConfirmAction({
+                          action: "disable-planned",
+                          title: "Désactiver la maintenance planifiée",
+                          description:
+                            "L'annonce de maintenance est supprimée.",
+                          confirmText: "Désactiver",
+                          isDangerous: false,
+                        })
+                      }
+                      disabled={loading !== null}
+                      className="text-xs text-red-300/70 hover:text-red-300 underline disabled:opacity-50"
+                    >
+                      Désactiver Planifiée
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       <div className="rounded-lg border border-white/5 bg-white/[0.02] p-6">
         <div className="flex items-start justify-between mb-4">
@@ -407,8 +430,12 @@ export default function AdminMaintenanceSection() {
           <div className="flex items-start gap-3">
             <CheckCircle2 size={20} className="text-emerald-400 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-emerald-300">Opération réussie</p>
-              <p className="text-sm text-emerald-300/70 mt-1">{lastAction.result}</p>
+              <p className="text-sm font-medium text-emerald-300">
+                Opération réussie
+              </p>
+              <p className="text-sm text-emerald-300/70 mt-1">
+                {lastAction.result}
+              </p>
               <p className="text-xs text-emerald-300/50 mt-2">
                 {lastAction.timestamp.toLocaleTimeString("fr-FR")}
               </p>

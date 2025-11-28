@@ -30,8 +30,8 @@ export default function MaintenanceScreen() {
 
         <div className="pt-4 space-y-2">
           <p className="text-sm text-foreground/60">
-            Nos équipes travaillent à la restauration du service. Veuillez réessayer
-            dans quelques minutes.
+            Nos équipes travaillent à la restauration du service. Veuillez
+            réessayer dans quelques minutes.
           </p>
           <p className="text-xs text-foreground/40">
             Merci de votre patience et de votre compréhension.

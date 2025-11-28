@@ -20,10 +20,18 @@ interface MaintenanceContextType {
   error: string | null;
 }
 
-const MaintenanceContext = createContext<MaintenanceContextType | undefined>(undefined);
+const MaintenanceContext = createContext<MaintenanceContextType | undefined>(
+  undefined,
+);
 
-export function MaintenanceProvider({ children }: { children: React.ReactNode }) {
-  const [maintenance, setMaintenance] = useState<MaintenanceSettings | null>(null);
+export function MaintenanceProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [maintenance, setMaintenance] = useState<MaintenanceSettings | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +78,7 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
           license: false,
           message: "",
         });
-      }
+      },
     );
 
     return () => unsubscribe();

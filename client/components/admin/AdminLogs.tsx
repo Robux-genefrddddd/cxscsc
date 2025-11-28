@@ -89,14 +89,16 @@ export default function AdminLogs() {
 
         const data = await response.json();
         if (data.success && Array.isArray(data.logs)) {
-          const formattedLogs: AdminLog[] = data.logs.slice(0, 10).map((log: any) => ({
-            id: log.id || Math.random().toString(),
-            action: log.action,
-            adminUid: log.adminUid,
-            data: log.data,
-            timestamp: log.timestamp?.toDate?.() || new Date(log.timestamp),
-            severity: getSeverityFromAction(log.action),
-          }));
+          const formattedLogs: AdminLog[] = data.logs
+            .slice(0, 10)
+            .map((log: any) => ({
+              id: log.id || Math.random().toString(),
+              action: log.action,
+              adminUid: log.adminUid,
+              data: log.data,
+              timestamp: log.timestamp?.toDate?.() || new Date(log.timestamp),
+              severity: getSeverityFromAction(log.action),
+            }));
           setLogs(formattedLogs);
         }
       } catch (error) {
@@ -111,10 +113,18 @@ export default function AdminLogs() {
     return () => clearInterval(interval);
   }, []);
 
-  const getSeverityFromAction = (action: string): "info" | "warning" | "success" | "error" => {
+  const getSeverityFromAction = (
+    action: string,
+  ): "info" | "warning" | "success" | "error" => {
     if (action.includes("DELETE") || action.includes("BAN")) return "error";
-    if (action.includes("PROMOTE") || action.includes("CREATE") || action.includes("ENABLE")) return "success";
-    if (action.includes("DISABLE") || action.includes("UPDATE")) return "warning";
+    if (
+      action.includes("PROMOTE") ||
+      action.includes("CREATE") ||
+      action.includes("ENABLE")
+    )
+      return "success";
+    if (action.includes("DISABLE") || action.includes("UPDATE"))
+      return "warning";
     return "info";
   };
 
@@ -131,15 +141,15 @@ export default function AdminLogs() {
       {/* Header */}
       <div className="space-y-2">
         <h3 className="text-18px font-semibold text-white">Activité récente</h3>
-        <p className="text-13px text-white/60">
-          Dernières actions du système
-        </p>
+        <p className="text-13px text-white/60">Dernières actions du système</p>
       </div>
 
       {/* Logs list */}
       <div className="space-y-2">
         {logs.length === 0 ? (
-          <div className={`${dsClasses.card} p-4 text-center text-white/60 text-13px`}>
+          <div
+            className={`${dsClasses.card} p-4 text-center text-white/60 text-13px`}
+          >
             Aucune activité récente
           </div>
         ) : (
@@ -175,7 +185,10 @@ export default function AdminLogs() {
                   {/* Details */}
                   {log.data && (
                     <p className="text-13px text-white/70 mt-1">
-                      {log.data.reason || log.data.message || log.data.targetUser || ""}
+                      {log.data.reason ||
+                        log.data.message ||
+                        log.data.targetUser ||
+                        ""}
                     </p>
                   )}
 

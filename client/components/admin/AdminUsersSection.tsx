@@ -97,7 +97,8 @@ export default function AdminUsersSection() {
         return;
       }
 
-      const errorMsg = error instanceof Error ? error.message : "Erreur lors du chargement";
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors du chargement";
       setError(errorMsg);
     } finally {
       setLoading(false);
@@ -163,13 +164,16 @@ export default function AdminUsersSection() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Erreur lors de l'opération");
+        throw new Error(
+          data.message || data.error || "Erreur lors de l'opération",
+        );
       }
 
       toast.success(`Action complétée: ${confirmAction.type}`);
       loadUsers();
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Erreur lors de l'opération";
+      const errorMsg =
+        error instanceof Error ? error.message : "Erreur lors de l'opération";
       toast.error(errorMsg);
     } finally {
       setActionLoading(null);
@@ -203,7 +207,9 @@ export default function AdminUsersSection() {
       {/* Header */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-20px font-semibold text-white">Gestion des utilisateurs</h2>
+          <h2 className="text-20px font-semibold text-white">
+            Gestion des utilisateurs
+          </h2>
           <p className="text-13px text-white/60 mt-1">
             Découvrir et gérer {stats.total} utilisateurs actifs
           </p>
@@ -221,8 +227,13 @@ export default function AdminUsersSection() {
 
       {/* Error State */}
       {error && (
-        <div className={`${dsClasses.card} border-red-500/30 bg-red-500/10 p-4 flex items-start gap-3`}>
-          <AlertCircle size={18} className="text-red-400 mt-0.5 flex-shrink-0" />
+        <div
+          className={`${dsClasses.card} border-red-500/30 bg-red-500/10 p-4 flex items-start gap-3`}
+        >
+          <AlertCircle
+            size={18}
+            className="text-red-400 mt-0.5 flex-shrink-0"
+          />
           <div>
             <p className="text-sm font-medium text-red-300">{error}</p>
             <button
@@ -275,25 +286,31 @@ export default function AdminUsersSection() {
                 {/* Badges */}
                 <div className="flex items-center gap-2 flex-wrap justify-end">
                   {user.isAdmin && (
-                    <div className={`${dsClasses.badge} ${dsClasses.badgeInfo}`}>
+                    <div
+                      className={`${dsClasses.badge} ${dsClasses.badgeInfo}`}
+                    >
                       <Shield size={11} />
                       Admin
                     </div>
                   )}
                   {user.isBanned && (
-                    <div className={`${dsClasses.badge} ${dsClasses.badgeError}`}>
+                    <div
+                      className={`${dsClasses.badge} ${dsClasses.badgeError}`}
+                    >
                       <Ban size={11} />
                       Banni
                     </div>
                   )}
                   {user.plan && (
-                    <div className={`${dsClasses.badge} ${
-                      user.plan === "Pro"
-                        ? dsClasses.badgeSuccess
-                        : user.plan === "Classic"
-                          ? dsClasses.badgeWarning
-                          : dsClasses.badgeInfo
-                    }`}>
+                    <div
+                      className={`${dsClasses.badge} ${
+                        user.plan === "Pro"
+                          ? dsClasses.badgeSuccess
+                          : user.plan === "Classic"
+                            ? dsClasses.badgeWarning
+                            : dsClasses.badgeInfo
+                      }`}
+                    >
                       {user.plan}
                     </div>
                   )}
@@ -302,7 +319,9 @@ export default function AdminUsersSection() {
                 {/* Actions Menu */}
                 <button
                   onClick={() =>
-                    setExpandedUserId(expandedUserId === user.uid ? null : user.uid)
+                    setExpandedUserId(
+                      expandedUserId === user.uid ? null : user.uid,
+                    )
                   }
                   className="p-1.5 text-white/40 hover:text-white/70 hover:bg-white/5 rounded-md transition-all"
                 >
@@ -321,19 +340,25 @@ export default function AdminUsersSection() {
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-3">
                     <div className="text-center">
-                      <p className="text-11px text-white/50 uppercase font-medium">Créé</p>
+                      <p className="text-11px text-white/50 uppercase font-medium">
+                        Créé
+                      </p>
                       <p className="text-12px text-white mt-1">
                         {user.createdAt?.toLocaleDateString?.("fr-FR") || "-"}
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-11px text-white/50 uppercase font-medium">Messages</p>
+                      <p className="text-11px text-white/50 uppercase font-medium">
+                        Messages
+                      </p>
                       <p className="text-12px text-white mt-1">
                         {user.messagesUsed} / {user.messagesLimit}
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-11px text-white/50 uppercase font-medium">Statut</p>
+                      <p className="text-11px text-white/50 uppercase font-medium">
+                        Statut
+                      </p>
                       <p className="text-12px text-white mt-1">
                         {user.isBanned ? "Banni" : "Actif"}
                       </p>
@@ -344,7 +369,9 @@ export default function AdminUsersSection() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {!user.isAdmin && (
                       <button
-                        onClick={() => handleAction("promote", user.uid, user.email)}
+                        onClick={() =>
+                          handleAction("promote", user.uid, user.email)
+                        }
                         disabled={actionLoading !== null}
                         className={`${dsClasses.buttonBase} text-12px px-3 py-1.5 rounded-md bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30`}
                       >
@@ -353,7 +380,9 @@ export default function AdminUsersSection() {
                     )}
                     {user.isAdmin && (
                       <button
-                        onClick={() => handleAction("demote", user.uid, user.email)}
+                        onClick={() =>
+                          handleAction("demote", user.uid, user.email)
+                        }
                         disabled={actionLoading !== null}
                         className={`${dsClasses.buttonBase} text-12px px-3 py-1.5 rounded-md bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/30`}
                       >
@@ -362,7 +391,9 @@ export default function AdminUsersSection() {
                     )}
                     {!user.isBanned && (
                       <button
-                        onClick={() => handleAction("ban", user.uid, user.email)}
+                        onClick={() =>
+                          handleAction("ban", user.uid, user.email)
+                        }
                         disabled={actionLoading !== null}
                         className={`${dsClasses.buttonBase} text-12px px-3 py-1.5 rounded-md bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30`}
                       >
@@ -371,7 +402,9 @@ export default function AdminUsersSection() {
                     )}
                     {user.isBanned && (
                       <button
-                        onClick={() => handleAction("unban", user.uid, user.email)}
+                        onClick={() =>
+                          handleAction("unban", user.uid, user.email)
+                        }
                         disabled={actionLoading !== null}
                         className={`${dsClasses.buttonBase} text-12px px-3 py-1.5 rounded-md bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30`}
                       >
@@ -379,14 +412,18 @@ export default function AdminUsersSection() {
                       </button>
                     )}
                     <button
-                      onClick={() => handleAction("reset", user.uid, user.email)}
+                      onClick={() =>
+                        handleAction("reset", user.uid, user.email)
+                      }
                       disabled={actionLoading !== null}
                       className={`${dsClasses.buttonBase} text-12px px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/15 text-white`}
                     >
                       <RotateCcw size={11} /> Reset
                     </button>
                     <button
-                      onClick={() => handleAction("delete", user.uid, user.email)}
+                      onClick={() =>
+                        handleAction("delete", user.uid, user.email)
+                      }
                       disabled={actionLoading !== null}
                       className={`${dsClasses.buttonBase} text-12px px-3 py-1.5 rounded-md bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30`}
                     >
